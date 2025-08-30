@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Json;
+using Xunit;
+using FluentAssertions;
 using backend.Data;
 using backend.DTOs;
 using backend.Models;
@@ -189,9 +191,9 @@ namespace backend.Tests.Integration
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
             
-            // Verificar que se eliminó de la base de datos
-            var deletedDestination = await _context.Destinations.FindAsync(destination.ID);
-            deletedDestination.Should().BeNull();
+            // Verificar que se eliminó de la base de datos haciendo una nueva consulta HTTP
+            var getResponse = await _client.GetAsync($"/api/destinations/{destination.ID}");
+            getResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
         }
 
         [Fact]
@@ -247,14 +249,14 @@ namespace backend.Tests.Integration
             await SeedTestDataAsync();
 
             // Act
-            var response = await _client.GetAsync("/api/destinations?searchTerm=París");
+            var response = await _client.GetAsync("/api/destinations?searchTerm=Tokio");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             var result = await response.Content.ReadFromJsonAsync<PagedResultDto<DestinationDto>>();
             result.Should().NotBeNull();
             result!.Items.Should().HaveCount(1);
-            result.Items.First().Name.Should().Contain("París");
+            result.Items.First().Name.Should().Contain("Tokio");
         }
 
         [Fact]

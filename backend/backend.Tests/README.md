@@ -199,3 +199,14 @@ Al agregar nuevos tests:
 3. Agregar tests para casos de error
 4. Mantener la cobertura de código alta
 5. Documentar casos especiales o complejos
+
+## Author
+
+**Lorelay Pricop Florescu**  
+Graduate in Interactive Technologies and Project Manager with experience in .NET, Python, Angular, Azure DevOps, AI, and Agile methodologies.
+
+🔗 [LinkedIn](https://www.linkedin.com/in/lorelaypricop)  
+📧 Contact: lorelaypricop@gmail.com
+
+# Notes
+> Some ideas regarding validation, style, and structure were reviewed with the support of artificial intelligence (AI) tools, used to help accelerate documentation and validate edge case

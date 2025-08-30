@@ -1,4 +1,6 @@
 using AutoMapper;
+using Xunit;
+using FluentAssertions;
 using backend.DTOs;
 using backend.Mapping;
 using backend.Models;
@@ -65,7 +67,7 @@ namespace backend.Tests.Mapping
             destination.Description.Should().Be(createDto.Description);
             destination.CountryCode.Should().Be(createDto.CountryCode);
             destination.Type.Should().Be(createDto.Type);
-            destination.LastModif.Should().Be(default(DateTime)); // LastModif no se mapea desde CreateDto
+            destination.LastModif.Should().Be(default(DateTime)); // LastModif se ignora en el mapeo
         }
 
         [Fact]
@@ -84,7 +86,7 @@ namespace backend.Tests.Mapping
             destination.Description.Should().Be(updateDto.Description);
             destination.CountryCode.Should().Be(updateDto.CountryCode);
             destination.Type.Should().Be(updateDto.Type);
-            destination.LastModif.Should().Be(default(DateTime)); // LastModif no se mapea desde UpdateDto
+            destination.LastModif.Should().Be(default(DateTime)); // LastModif se ignora en el mapeo
         }
 
         [Fact]
