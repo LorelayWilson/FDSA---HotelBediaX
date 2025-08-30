@@ -26,40 +26,16 @@ namespace backend.Data
 
         /// <summary>
         /// Método llamado durante la creación del modelo para configurar entidades
-        /// Define restricciones, índices y configuraciones específicas
+        /// Define índices para optimizar consultas de filtrado
         /// </summary>
         /// <param name="modelBuilder">Constructor del modelo de Entity Framework</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuración específica de la entidad Destination
+            // Configuración de índices para mejorar el rendimiento en consultas de filtrado
             modelBuilder.Entity<Destination>(entity =>
             {
-                // Configuración de la clave primaria
-                entity.HasKey(e => e.ID);
-                
-                // Configuración de propiedades con validaciones
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(100);
-                    
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(500);
-                    
-                entity.Property(e => e.CountryCode)
-                    .IsRequired()
-                    .HasMaxLength(3);
-                    
-                entity.Property(e => e.Type)
-                    .IsRequired();
-                    
-                entity.Property(e => e.LastModif)
-                    .IsRequired();
-
-                // Índices para mejorar el rendimiento en consultas de filtrado
-                // Estos índices son especialmente importantes para grandes volúmenes de datos
                 entity.HasIndex(e => e.CountryCode);
                 entity.HasIndex(e => e.Type);
                 entity.HasIndex(e => e.LastModif);

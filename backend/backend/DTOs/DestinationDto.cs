@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using backend.Models;
 
 namespace backend.DTOs
@@ -29,12 +30,22 @@ namespace backend.DTOs
     public class CreateDestinationDto
     {
         /// <summary>Nombre del destino turístico</summary>
+        [Required(ErrorMessage = "El nombre es requerido")]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "El nombre debe tener entre 1 y 100 caracteres")]
         public string Name { get; set; } = string.Empty;
+        
         /// <summary>Descripción detallada del destino</summary>
+        [Required(ErrorMessage = "La descripción es requerida")]
+        [StringLength(500, MinimumLength = 1, ErrorMessage = "La descripción debe tener entre 1 y 500 caracteres")]
         public string Description { get; set; } = string.Empty;
+        
         /// <summary>Código ISO del país (3 caracteres)</summary>
+        [Required(ErrorMessage = "El código de país es requerido")]
+        [StringLength(3, MinimumLength = 3, ErrorMessage = "El código de país debe tener exactamente 3 caracteres")]
         public string CountryCode { get; set; } = string.Empty;
+        
         /// <summary>Tipo de destino turístico</summary>
+        [Required(ErrorMessage = "El tipo de destino es requerido")]
         public DestinationType Type { get; set; }
     }
 
@@ -45,12 +56,22 @@ namespace backend.DTOs
     public class UpdateDestinationDto
     {
         /// <summary>Nombre del destino turístico</summary>
+        [Required(ErrorMessage = "El nombre es requerido")]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "El nombre debe tener entre 1 y 100 caracteres")]
         public string Name { get; set; } = string.Empty;
+        
         /// <summary>Descripción detallada del destino</summary>
+        [Required(ErrorMessage = "La descripción es requerida")]
+        [StringLength(500, MinimumLength = 1, ErrorMessage = "La descripción debe tener entre 1 y 500 caracteres")]
         public string Description { get; set; } = string.Empty;
+        
         /// <summary>Código ISO del país (3 caracteres)</summary>
+        [Required(ErrorMessage = "El código de país es requerido")]
+        [StringLength(3, MinimumLength = 3, ErrorMessage = "El código de país debe tener exactamente 3 caracteres")]
         public string CountryCode { get; set; } = string.Empty;
+        
         /// <summary>Tipo de destino turístico</summary>
+        [Required(ErrorMessage = "El tipo de destino es requerido")]
         public DestinationType Type { get; set; }
     }
 
