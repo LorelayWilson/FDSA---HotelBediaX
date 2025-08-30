@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Serilog;
 
 namespace backend.Middleware
 {
@@ -20,18 +21,25 @@ namespace backend.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
+            var requestId = context.TraceIdentifier;
+            var method = context.Request.Method;
+            var path = context.Request.Path;
+            var queryString = context.Request.QueryString.ToString();
+
             try
             {
                 await _next(context);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error no manejado en la aplicación");
-                await HandleExceptionAsync(context, ex);
+                Log.Error(ex, "Error no manejado en la aplicación para {Method} {Path}{QueryString} con RequestId {RequestId}", 
+                    method, path, queryString, requestId);
+                
+                await HandleExceptionAsync(context, ex, requestId);
             }
         }
 
-        private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private static async Task HandleExceptionAsync(HttpContext context, Exception exception, string requestId)
         {
             context.Response.ContentType = "application/json";
             
@@ -39,6 +47,7 @@ namespace backend.Middleware
             {
                 message = "Error interno del servidor",
                 error = exception.Message,
+                requestId = requestId,
                 timestamp = DateTime.UtcNow
             };
 

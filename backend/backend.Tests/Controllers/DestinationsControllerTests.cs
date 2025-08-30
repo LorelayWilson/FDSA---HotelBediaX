@@ -17,12 +17,14 @@ namespace backend.Tests.Controllers
     public class DestinationsControllerTests
     {
         private readonly Mock<IDestinationService> _mockService;
+        private readonly Mock<ILogger<DestinationsController>> _mockLogger;
         private readonly DestinationsController _controller;
 
         public DestinationsControllerTests()
         {
             _mockService = new Mock<IDestinationService>();
-            _controller = new DestinationsController(_mockService.Object);
+            _mockLogger = new Mock<ILogger<DestinationsController>>();
+            _controller = new DestinationsController(_mockService.Object, _mockLogger.Object);
         }
 
         [Fact]

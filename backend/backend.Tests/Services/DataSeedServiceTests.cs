@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using FluentAssertions;
+using Moq;
 using backend.Data;
 using backend.Models;
 using backend.Services;
@@ -14,6 +15,7 @@ namespace backend.Tests.Services
     public class DataSeedServiceTests : IDisposable
     {
         private readonly ApplicationDbContext _context;
+        private readonly Mock<ILogger<DataSeedService>> _mockLogger;
         private readonly DataSeedService _service;
 
         public DataSeedServiceTests()
@@ -24,7 +26,8 @@ namespace backend.Tests.Services
                 .Options;
 
             _context = new ApplicationDbContext(options);
-            _service = new DataSeedService(_context);
+            _mockLogger = new Mock<ILogger<DataSeedService>>();
+            _service = new DataSeedService(_context, _mockLogger.Object);
         }
 
         [Fact]

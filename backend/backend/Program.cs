@@ -2,9 +2,22 @@ using backend.Data;
 using backend.Services;
 using backend.Middleware;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 // Configuración y construcción de la aplicación web
 var builder = WebApplication.CreateBuilder(args);
+
+// Configurar Serilog
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration)
+        .Enrich.FromLogContext()
+        .Enrich.WithMachineName()
+        .Enrich.WithProcessId()
+        .Enrich.WithThreadId());
+
+try
+{
+    Log.Information("Iniciando HotelBediaX API...");
 
 // ============================================================================
 // CONFIGURACIÓN DE SERVICIOS
@@ -114,6 +127,16 @@ app.MapControllers();
 // ============================================================================
 
 app.Run();
+
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Error fatal al iniciar la aplicación HotelBediaX");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
 
 // Hacer la clase Program pública para las pruebas de integración
 public partial class Program { }

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Xunit;
 using FluentAssertions;
+using Moq;
 using backend.Data;
 using backend.DTOs;
 using backend.Models;
@@ -18,6 +19,7 @@ namespace backend.Tests.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly Mock<ILogger<DestinationService>> _mockLogger;
         private readonly DestinationService _service;
 
         public DestinationServiceTests()
@@ -33,7 +35,10 @@ namespace backend.Tests.Services
             var config = new MapperConfiguration(cfg => cfg.AddProfile<backend.Mapping.AutoMapperProfile>());
             _mapper = config.CreateMapper();
 
-            _service = new DestinationService(_context, _mapper);
+            // Configurar mock del logger
+            _mockLogger = new Mock<ILogger<DestinationService>>();
+
+            _service = new DestinationService(_context, _mapper, _mockLogger.Object);
         }
 
         [Fact]

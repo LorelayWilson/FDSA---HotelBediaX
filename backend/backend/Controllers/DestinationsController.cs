@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.DTOs;
 using backend.Services;
+using Serilog;
 
 namespace backend.Controllers
 {
@@ -9,10 +10,12 @@ namespace backend.Controllers
     public class DestinationsController : ControllerBase
     {
         private readonly IDestinationService _destinationService;
+        private readonly ILogger<DestinationsController> _logger;
 
-        public DestinationsController(IDestinationService destinationService)
+        public DestinationsController(IDestinationService destinationService, ILogger<DestinationsController> logger)
         {
             _destinationService = destinationService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -49,8 +52,11 @@ namespace backend.Controllers
             var destination = await _destinationService.GetDestinationByIdAsync(id);
             
             if (destination == null)
+            {
+                Log.Warning("Destino no encontrado con ID: {DestinationId}", id);
                 return NotFound(new { message = "Destino no encontrado" });
-
+            }
+            
             return Ok(destination);
         }
 
@@ -69,7 +75,10 @@ namespace backend.Controllers
         public async Task<ActionResult<DestinationDto>> CreateDestination(CreateDestinationDto createDto)
         {
             if (!ModelState.IsValid)
+            {
+                Log.Warning("Datos de entrada inválidos para crear destino: {@ModelState}", ModelState);
                 return BadRequest(ModelState);
+            }
 
             var destination = await _destinationService.CreateDestinationAsync(createDto);
             return CreatedAtAction(nameof(GetDestination), new { id = destination.ID }, destination);
@@ -93,13 +102,19 @@ namespace backend.Controllers
         public async Task<ActionResult<DestinationDto>> UpdateDestination(int id, UpdateDestinationDto updateDto)
         {
             if (!ModelState.IsValid)
+            {
+                Log.Warning("Datos de entrada inválidos para actualizar destino ID {DestinationId}: {@ModelState}", id, ModelState);
                 return BadRequest(ModelState);
+            }
 
             var destination = await _destinationService.UpdateDestinationAsync(id, updateDto);
             
             if (destination == null)
+            {
+                Log.Warning("Destino no encontrado para actualizar con ID: {DestinationId}", id);
                 return NotFound(new { message = "Destino no encontrado" });
-
+            }
+            
             return Ok(destination);
         }
 
@@ -120,7 +135,10 @@ namespace backend.Controllers
             var result = await _destinationService.DeleteDestinationAsync(id);
             
             if (!result)
+            {
+                Log.Warning("Destino no encontrado para eliminar con ID: {DestinationId}", id);
                 return NotFound(new { message = "Destino no encontrado" });
+            }
 
             return NoContent();
         }
@@ -154,6 +172,7 @@ namespace backend.Controllers
             var types = Enum.GetValues<backend.Models.DestinationType>()
                 .Select(t => t.ToString())
                 .ToList();
+            
             return Ok(types);
         }
     }

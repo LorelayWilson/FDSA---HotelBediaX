@@ -3,6 +3,7 @@ using AutoMapper;
 using backend.Data;
 using backend.DTOs;
 using backend.Models;
+using Serilog;
 
 namespace backend.Services
 {
@@ -14,16 +15,19 @@ namespace backend.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<DestinationService> _logger;
 
         /// <summary>
         /// Constructor que recibe las dependencias necesarias
         /// </summary>
         /// <param name="context">Contexto de Entity Framework para acceso a datos</param>
         /// <param name="mapper">Instancia de AutoMapper para conversiones entre entidades y DTOs</param>
-        public DestinationService(ApplicationDbContext context, IMapper mapper)
+        /// <param name="logger">Logger para registro de eventos</param>
+        public DestinationService(ApplicationDbContext context, IMapper mapper, ILogger<DestinationService> logger)
         {
             _context = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -73,13 +77,15 @@ namespace backend.Services
             var destinationDtos = _mapper.Map<List<DestinationDto>>(destinations);
 
             // Construir y retornar el resultado paginado
-            return new PagedResultDto<DestinationDto>
+            var result = new PagedResultDto<DestinationDto>
             {
                 Items = destinationDtos,
                 TotalCount = totalCount,
                 Page = filter.Page,
                 PageSize = filter.PageSize
             };
+
+            return result;
         }
 
         /// <summary>
@@ -111,6 +117,9 @@ namespace backend.Services
             _context.Destinations.Add(destination);
             await _context.SaveChangesAsync();
 
+            Log.Information("Destino creado: {DestinationName} (ID: {DestinationId}) en {CountryCode}", 
+                destination.Name, destination.ID, destination.CountryCode);
+
             // Retornar DTO del destino creado (con ID asignado)
             return _mapper.Map<DestinationDto>(destination);
         }
@@ -127,7 +136,10 @@ namespace backend.Services
 
             // Retornar null si no existe
             if (destination == null)
+            {
+                Log.Warning("Destino no encontrado para actualizar con ID: {DestinationId}", id);
                 return null;
+            }
 
             // Aplicar los cambios del DTO a la entidad
             _mapper.Map(updateDto, destination);
@@ -137,6 +149,9 @@ namespace backend.Services
 
             // Guardar cambios en la base de datos
             await _context.SaveChangesAsync();
+
+            Log.Information("Destino actualizado: {DestinationName} (ID: {DestinationId})", 
+                destination.Name, destination.ID);
 
             // Retornar DTO del destino actualizado
             return _mapper.Map<DestinationDto>(destination);
@@ -153,11 +168,17 @@ namespace backend.Services
 
             // Retornar false si no existe
             if (destination == null)
+            {
+                Log.Warning("Destino no encontrado para eliminar con ID: {DestinationId}", id);
                 return false;
+            }
 
             // Eliminar de la base de datos
             _context.Destinations.Remove(destination);
             await _context.SaveChangesAsync();
+
+            Log.Information("Destino eliminado: {DestinationName} (ID: {DestinationId})", 
+                destination.Name, destination.ID);
 
             return true;
         }

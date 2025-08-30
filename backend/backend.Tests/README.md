@@ -140,6 +140,10 @@ public async Task GetDestination_WithValidId_ReturnsDestination()
 ```csharp
 _mockService.Setup(s => s.GetDestinationByIdAsync(destinationId))
            .ReturnsAsync(expectedDestination);
+
+// Mock del logger para servicios
+_mockLogger = new Mock<ILogger<DestinationService>>();
+_service = new DestinationService(_context, _mapper, _mockLogger.Object);
 ```
 
 ### 3. Base de Datos en Memoria
@@ -174,6 +178,8 @@ La clase `TestDataHelper` proporciona métodos para crear datos de prueba consis
 4. **Datos de prueba consistentes**: Uso de helpers para crear datos
 5. **Cobertura completa**: Tests para casos exitosos y de error
 6. **Tests de integración**: Verificación del flujo completo
+7. **Mocking de dependencias**: Uso de Moq para logger y servicios
+8. **Logging en tests**: Verificación de que el logging funciona correctamente
 
 ## Troubleshooting
 

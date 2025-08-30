@@ -37,6 +37,7 @@ backend/
 - **Entity Framework Core**: ORM para acceso a datos
 - **AutoMapper**: Mapeo automático entre entidades y DTOs
 - **Swagger/OpenAPI**: Documentación automática de la API
+- **Serilog**: Logging estructurado con múltiples sinks
 - **Base de Datos en Memoria**: Mock database para demostración
 - **ASP.NET Core**: Framework web para APIs REST
 
@@ -88,6 +89,98 @@ public enum DestinationType
 |--------|----------|-------------|
 | `GET` | `/api/destinations/countries` | Lista de códigos de países |
 | `GET` | `/api/destinations/types` | Lista de tipos de destino |
+
+## Logging Estructurado con Serilog
+
+### Configuración de Logging
+
+La aplicación utiliza **Serilog** para logging estructurado con las siguientes características:
+
+#### Sinks Configurados
+- **Console**: Salida en consola con formato estructurado
+- **File**: Archivos de log con rotación diaria
+  - Producción: `logs/hotelbediax-{date}.log` (30 días de retención)
+  - Desarrollo: `logs/hotelbediax-dev-{date}.log` (7 días de retención)
+
+#### Enrichers Aplicados
+- **FromLogContext**: Contexto de la solicitud HTTP
+- **WithMachineName**: Nombre de la máquina
+- **WithProcessId**: ID del proceso
+- **WithThreadId**: ID del hilo
+
+#### Niveles de Logging
+- **Desarrollo**: Debug (máximo detalle)
+- **Producción**: Information (información relevante)
+- **Microsoft/System**: Warning (solo advertencias importantes)
+
+### Logging en la Aplicación
+
+#### Controladores
+```csharp
+// Solo logs de advertencias y errores importantes
+Log.Warning("Destino no encontrado con ID: {DestinationId}", id);
+Log.Warning("Datos de entrada inválidos para crear destino: {@ModelState}", ModelState);
+```
+
+#### Servicios
+```csharp
+// Solo logs de operaciones críticas (Create, Update, Delete)
+Log.Information("Destino creado: {DestinationName} (ID: {DestinationId}) en {CountryCode}", 
+    destination.Name, destination.ID, destination.CountryCode);
+Log.Warning("Destino no encontrado para actualizar con ID: {DestinationId}", id);
+```
+
+#### Middleware de Excepciones
+```csharp
+// Solo errores no manejados con contexto completo
+Log.Error(ex, "Error no manejado en la aplicación para {Method} {Path}{QueryString} con RequestId {RequestId}", 
+    method, path, queryString, requestId);
+```
+
+### Estructura de Logs
+
+Los logs incluyen información estructurada como:
+- **Timestamp**: Fecha y hora exacta
+- **Level**: Nivel de logging (Debug, Information, Warning, Error, Fatal)
+- **Message**: Mensaje descriptivo
+- **Properties**: Datos estructurados (filtros, IDs, etc.)
+- **Exception**: Stack trace completo para errores
+- **RequestId**: Identificador único de la solicitud HTTP
+
+### Ejemplo de Log de Producción
+```
+[2024-01-15 14:30:25.123 +00:00 INF] Destino creado: París (ID: 5) en FRA
+{"DestinationName": "París", "DestinationId": 5, "CountryCode": "FRA", "RequestId": "0HMQ8VQKJQJQJ"}
+
+[2024-01-15 14:31:10.456 +00:00 WRN] Destino no encontrado con ID: 999
+{"DestinationId": 999, "RequestId": "0HMQ8VQKJQJQK"}
+
+[2024-01-15 14:32:05.789 +00:00 ERR] Error no manejado en la aplicación para POST /api/destinations con RequestId 0HMQ8VQKJQJQL
+{"Method": "POST", "Path": "/api/destinations", "QueryString": "", "RequestId": "0HMQ8VQKJQJQL", "Exception": "..."}
+```
+
+### Estrategia de Logging
+
+#### **Logs Mínimos y Efectivos**
+- **Operaciones CRUD**: Solo logs de éxito para Create/Update/Delete
+- **Consultas**: Sin logs (operaciones frecuentes y no críticas)
+- **Errores**: Siempre loggeados con contexto completo
+- **Advertencias**: Solo para situaciones que requieren atención
+
+#### **Beneficios del Diseño**
+- **Logs limpios** sin información innecesaria
+- **Información relevante** y accionable
+- **Rendimiento optimizado** (menos operaciones de I/O)
+- **Debugging eficiente** con logs enfocados
+
+### Monitoreo y Debugging
+
+Los logs estructurados permiten:
+- **Búsqueda eficiente** por propiedades específicas
+- **Análisis de operaciones críticas** (creaciones, actualizaciones, eliminaciones)
+- **Seguimiento de errores** con RequestId y contexto completo
+- **Monitoreo de advertencias** para problemas potenciales
+- **Debugging** con información relevante y concisa
 
 ## Funcionalidades de Filtrado
 

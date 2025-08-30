@@ -1,5 +1,6 @@
 using backend.Data;
 using backend.Models;
+using Serilog;
 
 namespace backend.Services
 {
@@ -10,14 +11,17 @@ namespace backend.Services
     public class DataSeedService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<DataSeedService> _logger;
 
         /// <summary>
         /// Constructor que recibe el contexto de base de datos
         /// </summary>
         /// <param name="context">Contexto de Entity Framework para insertar datos</param>
-        public DataSeedService(ApplicationDbContext context)
+        /// <param name="logger">Logger para registro de eventos</param>
+        public DataSeedService(ApplicationDbContext context, ILogger<DataSeedService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         /// <summary>
@@ -26,9 +30,16 @@ namespace backend.Services
         /// </summary>
         public async Task SeedDataAsync()
         {
+            Log.Information("Iniciando proceso de seed de datos");
+            
             // Verificar si ya existen destinos para evitar duplicación
             if (_context.Destinations.Any())
+            {
+                Log.Information("La base de datos ya contiene destinos. Saltando el seed de datos");
                 return;
+            }
+
+            Log.Information("Base de datos vacía. Iniciando seed de datos de ejemplo");
 
             // Lista de destinos turísticos de ejemplo
             // Incluye una variedad de países, tipos y descripciones realistas
@@ -128,8 +139,12 @@ namespace backend.Services
             };
 
             // Insertar todos los destinos en la base de datos
+            Log.Information("Insertando {DestinationCount} destinos de ejemplo en la base de datos", destinations.Count);
+            
             _context.Destinations.AddRange(destinations);
             await _context.SaveChangesAsync();
+            
+            Log.Information("Seed de datos completado exitosamente. {DestinationCount} destinos insertados", destinations.Count);
         }
     }
 }
