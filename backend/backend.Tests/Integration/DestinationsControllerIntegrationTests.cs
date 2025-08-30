@@ -53,7 +53,7 @@ namespace backend.Tests.Integration
             await SeedTestDataAsync();
 
             // Act
-            var response = await _client.GetAsync("/api/destinations");
+            var response = await _client.GetAsync("/api/v1/destinations");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -69,7 +69,7 @@ namespace backend.Tests.Integration
             var destination = await SeedSingleDestinationAsync();
 
             // Act
-            var response = await _client.GetAsync($"/api/destinations/{destination.ID}");
+            var response = await _client.GetAsync($"/api/v1/destinations/{destination.ID}");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -83,7 +83,7 @@ namespace backend.Tests.Integration
         public async Task GetDestination_WithInvalidId_ReturnsNotFound()
         {
             // Act
-            var response = await _client.GetAsync("/api/destinations/999");
+            var response = await _client.GetAsync("/api/v1/destinations/999");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
@@ -102,7 +102,7 @@ namespace backend.Tests.Integration
             };
 
             // Act
-            var response = await _client.PostAsJsonAsync("/api/destinations", createDto);
+            var response = await _client.PostAsJsonAsync("/api/v1/destinations", createDto);
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
@@ -128,7 +128,7 @@ namespace backend.Tests.Integration
             };
 
             // Act
-            var response = await _client.PostAsJsonAsync("/api/destinations", createDto);
+            var response = await _client.PostAsJsonAsync("/api/v1/destinations", createDto);
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -148,7 +148,7 @@ namespace backend.Tests.Integration
             };
 
             // Act
-            var response = await _client.PutAsJsonAsync($"/api/destinations/{destination.ID}", updateDto);
+            var response = await _client.PutAsJsonAsync($"/api/v1/destinations/{destination.ID}", updateDto);
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -173,7 +173,7 @@ namespace backend.Tests.Integration
             };
 
             // Act
-            var response = await _client.PutAsJsonAsync("/api/destinations/999", updateDto);
+            var response = await _client.PutAsJsonAsync("/api/v1/destinations/999", updateDto);
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
@@ -186,13 +186,13 @@ namespace backend.Tests.Integration
             var destination = await SeedSingleDestinationAsync();
 
             // Act
-            var response = await _client.DeleteAsync($"/api/destinations/{destination.ID}");
+            var response = await _client.DeleteAsync($"/api/v1/destinations/{destination.ID}");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
             
             // Verificar que se eliminó de la base de datos haciendo una nueva consulta HTTP
-            var getResponse = await _client.GetAsync($"/api/destinations/{destination.ID}");
+            var getResponse = await _client.GetAsync($"/api/v1/destinations/{destination.ID}");
             getResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
         }
 
@@ -200,7 +200,7 @@ namespace backend.Tests.Integration
         public async Task DeleteDestination_WithInvalidId_ReturnsNotFound()
         {
             // Act
-            var response = await _client.DeleteAsync("/api/destinations/999");
+            var response = await _client.DeleteAsync("/api/v1/destinations/999");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
@@ -213,7 +213,7 @@ namespace backend.Tests.Integration
             await SeedTestDataAsync();
 
             // Act
-            var response = await _client.GetAsync("/api/destinations/countries");
+            var response = await _client.GetAsync("/api/v1/destinations/countries");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -228,7 +228,7 @@ namespace backend.Tests.Integration
         public async Task GetDestinationTypes_ReturnsListOfTypes()
         {
             // Act
-            var response = await _client.GetAsync("/api/destinations/types");
+            var response = await _client.GetAsync("/api/v1/destinations/types");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -249,7 +249,7 @@ namespace backend.Tests.Integration
             await SeedTestDataAsync();
 
             // Act
-            var response = await _client.GetAsync("/api/destinations?searchTerm=Tokio");
+            var response = await _client.GetAsync("/api/v1/destinations?searchTerm=Tokio");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -266,7 +266,7 @@ namespace backend.Tests.Integration
             await SeedTestDataAsync();
 
             // Act
-            var response = await _client.GetAsync("/api/destinations?countryCode=MEX");
+            var response = await _client.GetAsync("/api/v1/destinations?countryCode=MEX");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -282,7 +282,7 @@ namespace backend.Tests.Integration
             await SeedTestDataAsync();
 
             // Act
-            var response = await _client.GetAsync("/api/destinations?type=City");
+            var response = await _client.GetAsync("/api/v1/destinations?type=City");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -298,7 +298,7 @@ namespace backend.Tests.Integration
             await SeedTestDataAsync();
 
             // Act
-            var response = await _client.GetAsync("/api/destinations?page=1&pageSize=2");
+            var response = await _client.GetAsync("/api/v1/destinations?page=1&pageSize=2");
 
             // Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);

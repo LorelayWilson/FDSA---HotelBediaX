@@ -14,7 +14,7 @@ backend/
 │   ├── DeleteDestinationCommand.cs
 │   └── DeleteDestinationCommandHandler.cs
 ├── Controllers/          # Controladores de la API
-│   └── DestinationsController.cs
+│   └── DestinationsController.cs      # API v1.0
 ├── Data/                 # Contexto de Entity Framework
 │   └── ApplicationDbContext.cs
 ├── DTOs/                 # Objetos de transferencia de datos
@@ -96,22 +96,39 @@ public enum DestinationType
 
 ## Endpoints de la API
 
+### API Versioning
+
+La API soporta **múltiples versiones** para mantener compatibilidad y evolucionar sin romper clientes existentes:
+
+#### **Versión 1.0 (Estable)**
+- **URL**: `/api/v1/destinations`
+- **Funcionalidades**: CRUD básico, filtros, paginación
+- **Compatibilidad**: Mantenida para clientes existentes
+
 ### Operaciones CRUD Principales
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| `GET` | `/api/destinations` | Lista paginada con filtros |
-| `GET` | `/api/destinations/{id}` | Obtener destino por ID |
-| `POST` | `/api/destinations` | Crear nuevo destino |
-| `PUT` | `/api/destinations/{id}` | Actualizar destino existente |
-| `DELETE` | `/api/destinations/{id}` | Eliminar destino |
+| `GET` | `/api/v1/destinations` | Lista paginada con filtros |
+| `GET` | `/api/v1/destinations/{id}` | Obtener destino por ID |
+| `POST` | `/api/v1/destinations` | Crear nuevo destino |
+| `PUT` | `/api/v1/destinations/{id}` | Actualizar destino existente |
+| `DELETE` | `/api/v1/destinations/{id}` | Eliminar destino |
 
 ### Endpoints de Soporte
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| `GET` | `/api/destinations/countries` | Lista de códigos de países |
-| `GET` | `/api/destinations/types` | Lista de tipos de destino |
+| `GET` | `/api/v1/destinations/countries` | Lista de códigos de países |
+| `GET` | `/api/v1/destinations/types` | Lista de tipos de destino |
+
+### Métodos de Versionado
+
+La API soporta **3 métodos de versionado**:
+
+1. **URL Path**: `/api/v1/destinations` (recomendado)
+2. **Query String**: `?version=1.0`
+3. **Header**: `api-version: 1.0`
 
 ## Logging Estructurado con Serilog
 
@@ -313,7 +330,7 @@ Handlers → Unit of Work → Repositories → Entity Framework
 <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
 
 <!-- CQRS and Mediator -->
-<PackageReference Include="MediatR" Version="12.4.1" />
+<PackageReference Include="MediatR" Version="11.1.0" />
 <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
 
 <!-- Validation -->
@@ -327,7 +344,11 @@ Handlers → Unit of Work → Repositories → Entity Framework
 <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
 <PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0" />
 <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
-<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.3" />
+<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4" />
+
+<!-- API Versioning -->
+<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
+<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
 ```
 
 ### Configuración de Servicios
@@ -338,6 +359,7 @@ Handlers → Unit of Work → Repositories → Entity Framework
 - **MediatR**: Configuración automática de handlers CQRS
 - **Repositories**: Registro de repositorios genéricos y específicos
 - **Unit of Work**: Coordinación de transacciones
+- **API Versioning**: Configuración para versionado de API
 - **Swagger**: Documentación automática de la API
 - **Middleware**: Manejo global de excepciones
 
@@ -366,14 +388,14 @@ dotnet run
 
 ### Acceso a la Aplicación
 
-- **API REST**: `https://localhost:7170/api/destinations`
+- **API REST v1.0**: `https://localhost:7170/api/v1/destinations`
 - **Swagger UI**: `https://localhost:7170/swagger` (solo en desarrollo)
 
 ### Información de la API
 
 ```yaml
 Title: HotelBediaX API
-Version: v1
+Version: v1.0
 Description: API para la gestión de destinos turísticos de HotelBediaX
 Contact: Lorelay Pricop (lorelay.pricop@gmail.com)
 ```
@@ -396,10 +418,10 @@ La API incluye documentación automática completa con Swagger/OpenAPI:
 
 ```http
 # Obtener todos los destinos
-GET https://localhost:7170/api/destinations
+GET https://localhost:7170/api/v1/destinations
 
 # Crear un nuevo destino
-POST https://localhost:7170/api/destinations
+POST https://localhost:7170/api/v1/destinations
 Content-Type: application/json
 
 {
@@ -408,6 +430,13 @@ Content-Type: application/json
   "countryCode": "ARG",
   "type": "Adventure"
 }
+
+# Versionado por header
+GET https://localhost:7170/api/destinations
+api-version: 1.0
+
+# Versionado por query string
+GET https://localhost:7170/api/destinations?version=1.0
 ```
 
 ## Características de Rendimiento
@@ -494,6 +523,7 @@ public class GlobalExceptionMiddleware
 - **Migración a base de datos real** (SQL Server, PostgreSQL)
 - **Métricas y monitoreo** avanzado
 - **Rate limiting** para protección de la API
+- **API v2.0** con nuevas funcionalidades
 
 ## Notas de Desarrollo
 

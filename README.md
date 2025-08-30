@@ -16,6 +16,7 @@
 - ✅ **Logging**: Logging estructurado con Serilog
 - ✅ **Arquitectura**: CQRS + Repository Pattern + Unit of Work
 - ✅ **Patrones**: MediatR para desacoplamiento y mantenibilidad
+- ✅ **API Versioning**: Infraestructura preparada para versionado futuro
 
 ## Arquitectura básica del Proyecto
 
@@ -88,7 +89,7 @@ dotnet run
 
 ### Acceso a la Aplicación
 
-- **API REST**: `https://localhost:7170/api/destinations`
+- **API REST v1.0**: `https://localhost:7170/api/v1/destinations`
 - **Swagger UI**: `https://localhost:7170/swagger` (solo en desarrollo)
 - **Frontend**: `http://localhost:4200` (cuando esté implementado)
 
@@ -139,6 +140,7 @@ dotnet test
 - ✅ **Unit of Work** - Coordinación de transacciones complejas
 - ✅ **MediatR** - Desacoplamiento entre controladores y lógica de negocio
 - ✅ **Handlers especializados** - Cada operación tiene su handler específico
+- ✅ **API Versioning** - Infraestructura preparada para versionado futuro
 
 #### **Logging Estructurado**
 - ✅ **Serilog** configurado con múltiples sinks (Console, File)

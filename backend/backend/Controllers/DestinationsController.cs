@@ -9,7 +9,8 @@ using Serilog;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     public class DestinationsController : ControllerBase
     {
         private readonly IMediator _mediator;

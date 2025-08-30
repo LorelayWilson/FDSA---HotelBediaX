@@ -5,6 +5,9 @@ using backend.UnitOfWork;
 using backend.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using MediatR;
 
 // Configuración y construcción de la aplicación web
 var builder = WebApplication.CreateBuilder(args);
@@ -25,8 +28,28 @@ try
 // CONFIGURACIÓN DE SERVICIOS
 // ============================================================================
 
-// Agregar controladores MVC
+// Agregar controladores MVC con versionado
 builder.Services.AddControllers();
+
+// Configurar API Versioning
+builder.Services.AddApiVersioning(opt =>
+{
+    opt.DefaultApiVersion = new ApiVersion(1, 0);
+    opt.AssumeDefaultVersionWhenUnspecified = true;
+    opt.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new HeaderApiVersionReader("api-version"),
+        new QueryStringApiVersionReader("version")
+    );
+    opt.ReportApiVersions = true;
+});
+
+// Configurar API Explorer para Swagger
+builder.Services.AddVersionedApiExplorer(setup =>
+{
+    setup.GroupNameFormat = "'v'VVV";
+    setup.SubstituteApiVersionInUrl = true;
+});
 
 // Configurar CORS para permitir comunicación con el frontend Angular
 builder.Services.AddCors(options =>
@@ -51,7 +74,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddAutoMapper(typeof(Program));
 
 // Configurar MediatR para CQRS
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddMediatR(typeof(Program).Assembly);
 
 // Registrar repositorios
 builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
@@ -69,7 +92,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
         Title = "HotelBediaX API",
-        Version = "v1",
+        Version = "v1.0",
         Description = "API para la gestión de destinos turísticos de HotelBediaX",
         Contact = new Microsoft.OpenApi.Models.OpenApiContact
         {
@@ -114,7 +137,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "HotelBediaX API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "HotelBediaX API v1.0");
         c.RoutePrefix = "swagger"; // Swagger UI estará disponible en /swagger
         c.DocumentTitle = "HotelBediaX API Documentation";
     });

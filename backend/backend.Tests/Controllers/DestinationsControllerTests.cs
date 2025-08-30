@@ -10,6 +10,7 @@ using backend.Commands;
 using backend.Queries;
 using MediatR;
 using backend.Tests.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace backend.Tests.Controllers
 {
@@ -120,22 +121,7 @@ namespace backend.Tests.Controllers
             notFoundResult!.Value.Should().NotBeNull();
         }
 
-        [Fact(Skip = "Middleware handles exceptions in real application")]
-        public async Task GetDestination_WhenServiceThrowsException_ReturnsInternalServerError()
-        {
-            // Arrange
-            var destinationId = 1;
-            _mockService.Setup(s => s.GetDestinationByIdAsync(destinationId))
-                       .ThrowsAsync(new Exception("Error de base de datos"));
 
-            // Act
-            var result = await _controller.GetDestination(destinationId);
-
-            // Assert
-            result.Result.Should().BeOfType<ObjectResult>();
-            var objectResult = result.Result as ObjectResult;
-            objectResult!.StatusCode.Should().Be(500);
-        }
 
         [Fact]
         public async Task CreateDestination_WithValidData_ReturnsCreatedResult()
@@ -179,22 +165,7 @@ namespace backend.Tests.Controllers
             result.Result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact(Skip = "Middleware handles exceptions in real application")]
-        public async Task CreateDestination_WhenServiceThrowsException_ReturnsInternalServerError()
-        {
-            // Arrange
-            var createDto = TestDataHelper.CreateTestCreateDestinationDto();
-            _mockService.Setup(s => s.CreateDestinationAsync(createDto))
-                       .ThrowsAsync(new Exception("Error de base de datos"));
 
-            // Act
-            var result = await _controller.CreateDestination(createDto);
-
-            // Assert
-            result.Result.Should().BeOfType<ObjectResult>();
-            var objectResult = result.Result as ObjectResult;
-            objectResult!.StatusCode.Should().Be(500);
-        }
 
         [Fact]
         public async Task UpdateDestination_WithValidData_ReturnsOkResult()
@@ -255,23 +226,7 @@ namespace backend.Tests.Controllers
             result.Result.Should().BeOfType<BadRequestObjectResult>();
         }
 
-        [Fact(Skip = "Middleware handles exceptions in real application")]
-        public async Task UpdateDestination_WhenServiceThrowsException_ReturnsInternalServerError()
-        {
-            // Arrange
-            var destinationId = 1;
-            var updateDto = TestDataHelper.CreateTestUpdateDestinationDto();
-            _mockService.Setup(s => s.UpdateDestinationAsync(destinationId, updateDto))
-                       .ThrowsAsync(new Exception("Error de base de datos"));
 
-            // Act
-            var result = await _controller.UpdateDestination(destinationId, updateDto);
-
-            // Assert
-            result.Result.Should().BeOfType<ObjectResult>();
-            var objectResult = result.Result as ObjectResult;
-            objectResult!.StatusCode.Should().Be(500);
-        }
 
         [Fact]
         public async Task DeleteDestination_WithValidId_ReturnsNoContent()
@@ -303,22 +258,7 @@ namespace backend.Tests.Controllers
             result.Should().BeOfType<NotFoundObjectResult>();
         }
 
-        [Fact(Skip = "Middleware handles exceptions in real application")]
-        public async Task DeleteDestination_WhenServiceThrowsException_ReturnsInternalServerError()
-        {
-            // Arrange
-            var destinationId = 1;
-            _mockService.Setup(s => s.DeleteDestinationAsync(destinationId))
-                       .ThrowsAsync(new Exception("Error de base de datos"));
 
-            // Act
-            var result = await _controller.DeleteDestination(destinationId);
-
-            // Assert
-            result.Should().BeOfType<ObjectResult>();
-            var objectResult = result as ObjectResult;
-            objectResult!.StatusCode.Should().Be(500);
-        }
 
         [Fact]
         public async Task GetCountries_ReturnsOkResult()
@@ -337,21 +277,7 @@ namespace backend.Tests.Controllers
             okResult!.Value.Should().BeEquivalentTo(expectedCountries);
         }
 
-        [Fact(Skip = "Middleware handles exceptions in real application")]
-        public async Task GetCountries_WhenServiceThrowsException_ReturnsInternalServerError()
-        {
-            // Arrange
-            _mockService.Setup(s => s.GetCountriesAsync())
-                       .ThrowsAsync(new Exception("Error de base de datos"));
 
-            // Act
-            var result = await _controller.GetCountries();
-
-            // Assert
-            result.Result.Should().BeOfType<ObjectResult>();
-            var objectResult = result.Result as ObjectResult;
-            objectResult!.StatusCode.Should().Be(500);
-        }
 
         [Fact]
         public async Task GetDestinationTypes_ReturnsOkResult()
