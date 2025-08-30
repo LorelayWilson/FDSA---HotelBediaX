@@ -40,6 +40,10 @@ namespace backend.Tests.Application.Commands
                       .Returns(destination);
             _mockMapper.Setup(m => m.Map<DestinationDto>(destination))
                       .Returns(expectedDto);
+            
+            // Setup mock para el repositorio
+            var mockRepository = new Mock<backend.Domain.Interfaces.IDestinationRepository>();
+            _mockUnitOfWork.Setup(u => u.Destinations).Returns(mockRepository.Object);
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
@@ -47,7 +51,7 @@ namespace backend.Tests.Application.Commands
             // Assert
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(expectedDto);
-            _mockUnitOfWork.Verify(u => u.Destinations.Add(destination), Times.Once);
+            mockRepository.Verify(r => r.Add(destination), Times.Once);
             _mockUnitOfWork.Verify(u => u.SaveChangesAsync(), Times.Once);
         }
 
@@ -64,6 +68,10 @@ namespace backend.Tests.Application.Commands
                       .Returns(destination);
             _mockMapper.Setup(m => m.Map<DestinationDto>(It.IsAny<Destination>()))
                       .Returns(expectedDto);
+            
+            // Setup mock para el repositorio
+            var mockRepository = new Mock<backend.Domain.Interfaces.IDestinationRepository>();
+            _mockUnitOfWork.Setup(u => u.Destinations).Returns(mockRepository.Object);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);

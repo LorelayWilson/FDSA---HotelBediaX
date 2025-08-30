@@ -6,13 +6,35 @@ Este proyecto contiene los tests unitarios y de integración para el backend de 
 
 ```
 backend.Tests/
-├── Controllers/           # Tests para controladores (Presentation Layer)
-│   └── DestinationsControllerTests.cs
-├── Services/             # Tests para servicios (Application/Infrastructure Layer)
-│   ├── DestinationServiceTests.cs
-│   └── DataSeedServiceTests.cs
-├── Mapping/              # Tests para AutoMapper (Application Layer)
-│   └── AutoMapperProfileTests.cs
+├── Domain/               # Tests para capa de dominio
+│   ├── Entities/         # Tests para entidades
+│   │   └── DestinationTests.cs
+│   └── Enums/           # Tests para enumeraciones
+│       └── DestinationTypeTests.cs
+├── Application/          # Tests para capa de aplicación
+│   ├── Commands/        # Tests para command handlers
+│   │   ├── CreateDestinationCommandHandlerTests.cs
+│   │   ├── UpdateDestinationCommandHandlerTests.cs
+│   │   └── DeleteDestinationCommandHandlerTests.cs
+│   ├── Queries/         # Tests para query handlers
+│   │   ├── GetDestinationsQueryHandlerTests.cs
+│   │   ├── GetDestinationByIdQueryHandlerTests.cs
+│   │   ├── GetCountriesQueryHandlerTests.cs
+│   │   └── GetDestinationTypesQueryHandlerTests.cs
+│   └── Mapping/         # Tests para AutoMapper
+│       └── AutoMapperProfileTests.cs
+├── Infrastructure/       # Tests para capa de infraestructura
+│   ├── Repositories/    # Tests para repositorios
+│   │   └── DestinationRepositoryTests.cs
+│   ├── Services/        # Tests para servicios
+│   │   └── DataSeedServiceTests.cs
+│   └── UnitOfWork/      # Tests para Unit of Work
+│       └── UnitOfWorkTests.cs
+├── Presentation/         # Tests para capa de presentación
+│   ├── Controllers/     # Tests para controladores
+│   │   └── DestinationsControllerTests.cs
+│   └── Middleware/     # Tests para middleware
+│       └── GlobalExceptionMiddlewareTests.cs
 ├── Integration/          # Tests de integración (End-to-End)
 │   └── DestinationsControllerIntegrationTests.cs
 ├── Helpers/              # Clases helper para tests
@@ -22,21 +44,26 @@ backend.Tests/
 
 ### **Tests por Capa de Arquitectura Hexagonal**
 
-#### **Presentation Layer Tests**
-- **DestinationsControllerTests**: Tests unitarios para controladores
-- **Integration Tests**: Tests de integración end-to-end
+#### **Domain Layer Tests** 
+- **DestinationTests**: Tests para entidad del dominio
+- **DestinationTypeTests**: Tests para enumeración de tipos
 
-#### **Application Layer Tests**
+#### **Application Layer Tests** 
+- **Command Handlers**: Tests para Create, Update, Delete destinations
+- **Query Handlers**: Tests para GetDestinations, GetById, GetCountries, GetTypes
 - **AutoMapperProfileTests**: Tests para mapeo de DTOs
-- **Command/Query Handler Tests**: Tests para casos de uso (futuro)
 
-#### **Infrastructure Layer Tests**
-- **DataSeedServiceTests**: Tests para servicios de infraestructura
-- **Repository Tests**: Tests para repositorios (futuro)
+#### **Infrastructure Layer Tests** 
+- **DestinationRepositoryTests**: Tests para repositorio de destinos
+- **DataSeedServiceTests**: Tests para servicio de datos iniciales
+- **UnitOfWorkTests**: Tests para coordinación de transacciones
 
-#### **Domain Layer Tests**
-- **Entity Tests**: Tests para entidades del dominio (futuro)
-- **Business Logic Tests**: Tests para lógica de negocio (futuro)
+#### **Presentation Layer Tests** 
+- **DestinationsControllerTests**: Tests unitarios para controladores
+- **GlobalExceptionMiddlewareTests**: Tests para middleware de excepciones
+
+#### **Integration Tests** 
+- **DestinationsControllerIntegrationTests**: Tests end-to-end para API completa
 
 ## Tecnologías Utilizadas
 
@@ -123,15 +150,6 @@ dotnet test --filter "ClassName=DestinationServiceTests"
 1. Instalar la extensión **.NET Core Test Explorer**
 2. Abrir el proyecto
 3. Ejecutar tests desde el panel de Test Explorer
-
-## Cobertura de Código
-
-Los tests cubren:
-
-- ✅ **100%** de los métodos públicos de `DestinationService`
-- ✅ **100%** de los endpoints de `DestinationsController`
-- ✅ **100%** de la funcionalidad de `DataSeedService`
-- ✅ **100%** de los mapeos de `AutoMapperProfile`
 
 ## Patrones de Testing Utilizados
 

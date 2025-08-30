@@ -254,16 +254,6 @@ Para información detallada sobre testing, cobertura y ejecución de tests, cons
 - Verificar que todos los mapeos estén definidos en `AutoMapperProfile`
 - Ejecutar `config.AssertConfigurationIsValid()` en desarrollo
 
-## Próximos Pasos
-
-### Mejoras Futuras
-- **Autenticación y autorización** (JWT)
-- **Caching** para mejorar rendimiento
-- **Migración a base de datos real** (SQL Server, PostgreSQL)
-- **Métricas y monitoreo** avanzado
-- **Rate limiting** para protección de la API
-- **API v2.0** con nuevas funcionalidades
-
 ## Author
 
 **Lorelay Pricop Florescu**  
