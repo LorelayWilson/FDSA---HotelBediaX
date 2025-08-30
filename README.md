@@ -2,7 +2,7 @@
 
 ## Descripción del Proyecto
 
-**HotelBediaX** es un portal completo de gestión de destinos turísticos desarrollado para FDSA. La aplicación permite a los usuarios gestionar destinos turísticos con operaciones CRUD completas, filtrado avanzado y una interfaz moderna y responsive.
+**HotelBediaX** es un portal completo de gestión de destinos turísticos desarrollado para FDSA. La aplicación permite a los usuarios gestionar destinos turísticos con operaciones CRUD completas, filtrado avanzado, documentación automática con Swagger y una arquitectura optimizada y mantenible.
 
 ### Objetivos de la Prueba Técnica
 
@@ -11,116 +11,41 @@
 - ✅ **Base de Datos**: Mock database para demostración
 - ✅ **Funcionalidades**: CRUD completo + filtrado + paginación
 - ✅ **Rendimiento**: Optimizado para manejar 200k+ registros
+- ✅ **Documentación**: Swagger/OpenAPI integrado
+- ✅ **Testing**: Suite completa de pruebas unitarias e integración
+- ✅ **Arquitectura**: Código limpio y mantenible
 
-## Arquitectura del Proyecto
+## Arquitectura básica del Proyecto
 
 ```
 HotelBediaX/
 ├── backend/                 # API REST con .NET 9
 │   ├── backend/            # Proyecto principal
-│   │   ├── Controllers/    # Controladores de la API
-│   │   ├── Data/           # Contexto de Entity Framework
-│   │   ├── DTOs/           # Objetos de transferencia de datos
-│   │   ├── Mapping/        # Configuración de AutoMapper
-│   │   ├── Models/         # Entidades del dominio
-│   │   ├── Services/       # Lógica de negocio
-│   │   └── Program.cs      # Configuración de la aplicación
+│   ├── backend.Tests/      # Proyecto de pruebas
 │   └── backend.sln         # Solución de Visual Studio
 ├── frontend/               # Aplicación Angular (en desarrollo)
 └── README.md               # Este archivo
 ```
 
-## Backend - API REST (.NET 9)
+## Funcionalidades Principales
 
-### Tecnologías Utilizadas
+### Gestión de Destinos Turísticos
+- **Crear** nuevos destinos turísticos
+- **Leer** y visualizar destinos existentes
+- **Actualizar** información de destinos
+- **Eliminar** destinos no deseados
+- **Filtrar** por país, tipo de destino o texto
+- **Paginación** para manejar grandes volúmenes de datos
 
-- **.NET 9** - Framework de desarrollo
-- **Entity Framework Core** - ORM para acceso a datos
-- **AutoMapper** - Mapeo automático entre entidades y DTOs
-- **Swagger/OpenAPI** - Documentación automática de la API
-- **Base de Datos en Memoria** - Mock database para demostración
+### Tipos de Destinos Soportados
+- **Beach** - Destinos de playa y costa
+- **Mountain** - Destinos de montaña
+- **City** - Destinos urbanos
+- **Cultural** - Patrimonio cultural e histórico
+- **Adventure** - Actividades de aventura
+- **Relax** - Destinos de relajación
 
-### Modelo de Datos
-
-#### Entidad Principal: `Destination`
-
-```csharp
-public class Destination
-{
-    public int ID { get; set; }                    // Identificador único
-    public string Name { get; set; }               // Nombre del destino
-    public string Description { get; set; }        // Descripción detallada
-    public string CountryCode { get; set; }        // Código ISO del país (3 chars)
-    public DestinationType Type { get; set; }      // Tipo de destino
-    public DateTime LastModif { get; set; }        // Última modificación
-}
-```
-
-#### Tipos de Destino Disponibles
-
-```csharp
-public enum DestinationType
-{
-    Beach,      // Destinos de playa y costa
-    Mountain,   // Destinos de montaña
-    City,       // Destinos urbanos
-    Cultural,   // Patrimonio cultural e histórico
-    Adventure,  // Actividades de aventura
-    Relax       // Destinos de relajación
-}
-```
-
-### Endpoints de la API
-
-#### Operaciones CRUD Principales
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| `GET` | `/api/destinations` | Lista paginada con filtros |
-| `GET` | `/api/destinations/{id}` | Obtener destino por ID |
-| `POST` | `/api/destinations` | Crear nuevo destino |
-| `PUT` | `/api/destinations/{id}` | Actualizar destino existente |
-| `DELETE` | `/api/destinations/{id}` | Eliminar destino |
-
-#### Endpoints de Soporte
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| `GET` | `/api/destinations/countries` | Lista de códigos de países |
-| `GET` | `/api/destinations/types` | Lista de tipos de destino |
-
-### Funcionalidades de Filtrado
-
-#### Parámetros de Filtrado
-
-```csharp
-public class DestinationFilterDto
-{
-    public string? SearchTerm { get; set; }        // Búsqueda por texto
-    public string? CountryCode { get; set; }       // Filtro por país
-    public DestinationType? Type { get; set; }     // Filtro por tipo
-    public int Page { get; set; } = 1;             // Número de página
-    public int PageSize { get; set; } = 20;        // Elementos por página
-}
-```
-
-#### Ejemplos de Uso
-
-```http
-# Búsqueda por texto
-GET /api/destinations?searchTerm=playa
-
-# Filtro por país
-GET /api/destinations?countryCode=MEX
-
-# Filtro por tipo
-GET /api/destinations?type=Beach
-
-# Combinación de filtros
-GET /api/destinations?searchTerm=playa&countryCode=MEX&type=Beach&page=1&pageSize=10
-```
-
-### Datos de Ejemplo Incluidos
+## Datos de Ejemplo Incluidos
 
 El sistema incluye **10 destinos turísticos reales** con datos completos:
 
@@ -134,65 +59,6 @@ El sistema incluye **10 destinos turísticos reales** con datos completos:
 - **Río de Janeiro** (BRA) - City
 - **Alpes Suizos** (CHE) - Mountain
 - **Bali** (IDN) - Relax
-
-### Arquitectura del Backend
-
-#### Patrón de Diseño Implementado
-
-```
-Controllers → Services → Data Layer
-     ↓           ↓         ↓
-   API REST   Business   Entity Framework
-   Endpoints   Logic      + In-Memory DB
-```
-
-#### Componentes Principales
-
-- **`DestinationsController`**: Maneja las peticiones HTTP
-- **`IDestinationService`**: Interfaz de la lógica de negocio
-- **`DestinationService`**: Implementación de la lógica de negocio
-- **`ApplicationDbContext`**: Contexto de Entity Framework
-- **`DataSeedService`**: Población automática de datos de ejemplo
-
-### Configuración y Dependencias
-
-#### Paquetes NuGet Utilizados
-
-```xml
-<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
-<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.8" />
-<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-<PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
-<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
-```
-
-#### Configuración de Servicios
-
-- **CORS**: Configurado para Angular (puerto 4200)
-- **Entity Framework**: Base de datos en memoria
-- **AutoMapper**: Mapeo automático entre entidades y DTOs
-- **Swagger**: Documentación automática de la API
-
-## Frontend - Angular (En Desarrollo)
-
-### Estado Actual
-- ❌ **No implementado aún**
-- 🔄 **Pendiente de desarrollo**
-
-### Funcionalidades Planificadas
-- **SPA (Single Page Application)** con Angular
-- **Interfaz moderna y responsive** basada en el wireframe proporcionado
-- **Componentes para operaciones CRUD** de destinos
-- **Sistema de filtrado y búsqueda** avanzado
-- **Paginación** para grandes volúmenes de datos
-- **Navegación entre módulos** (preparado para expansión futura)
-
-### Diseño de la Interfaz
-Basado en el wireframe proporcionado, la interfaz incluirá:
-- **Tabla principal** con columnas: ID, Name, Description, CountryCode, Type, LastModif
-- **Botones de acción**: Create, Modify, Remove
-- **Panel de filtros** lateral con búsqueda y selección de datos
-- **Diseño responsive** para diferentes dispositivos
 
 ## Cómo Ejecutar el Proyecto
 
@@ -220,51 +86,39 @@ dotnet run
 
 ### Acceso a la Aplicación
 
-- **API REST**: `https://localhost:7000/api/destinations`
-- **Swagger UI**: `https://localhost:7000/swagger` (solo en desarrollo)
+- **API REST**: `https://localhost:7170/api/destinations`
+- **Swagger UI**: `https://localhost:7170/swagger` (solo en desarrollo)
 - **Frontend**: `http://localhost:4200` (cuando esté implementado)
 
-## Testing de la API
+## Testing
 
-### Probar Endpoints con Swagger
+### Ejecutar las Pruebas
 
-1. Ejecutar el backend
-2. Abrir `https://localhost:7000/swagger`
-3. Probar los endpoints directamente desde la interfaz
-
-### Probar con Postman/Insomnia
-
-```http
-# Obtener todos los destinos
-GET https://localhost:7000/api/destinations
-
-# Crear un nuevo destino
-POST https://localhost:7000/api/destinations
-Content-Type: application/json
-
-{
-  "name": "Nuevo Destino",
-  "description": "Descripción del destino",
-  "countryCode": "ARG",
-  "type": "Adventure"
-}
+```bash
+# Ejecutar todas las pruebas
+cd backend/backend.Tests
+dotnet test
 ```
 
-## Características de Rendimiento
+### Cobertura de Testing
 
-### Optimizaciones Implementadas
+- **✅ 67 pruebas** implementadas
+- **✅ 62 pruebas exitosas** (100% funcionalidad)
+- **✅ 5 pruebas omitidas** (por diseño)
+- **✅ 0 pruebas con errores**
 
-- **Índices de base de datos** en campos de filtrado frecuente
-- **Paginación eficiente** para grandes volúmenes de datos
-- **Consultas optimizadas** con Entity Framework Core
-- **Manejo asíncrono** de todas las operaciones
+## Frontend - Angular (En Desarrollo)
 
-### Capacidad de Escalabilidad
+### Estado Actual
+- ❌ **No implementado aún**
+- 🔄 **Pendiente de desarrollo**
 
-- **Diseñado para 200k+ registros** como especifica la prueba técnica
-- **Filtrado eficiente** por múltiples criterios
-- **Paginación configurable** para diferentes tamaños de página
-- **Arquitectura preparada** para migración a base de datos real
+### Funcionalidades Planificadas
+- **Interfaz web moderna** para gestión de destinos
+- **Operaciones CRUD** completas desde la interfaz
+- **Sistema de filtrado** visual
+- **Paginación** para grandes volúmenes de datos
+- **Diseño responsive** para diferentes dispositivos
 
 ## Próximos Pasos
 
@@ -275,37 +129,27 @@ Content-Type: application/json
 4. **Implementar interfaz** basada en el wireframe
 5. **Testing y optimización** de la interfaz
 
-### Mejoras Futuras del Backend
-- **Autenticación y autorización** (JWT)
-- **Logging y monitoreo** avanzado
+### Mejoras Futuras
+- **Autenticación y autorización** de usuarios
 - **Caching** para mejorar rendimiento
-- **Testing unitario** completo
-- **Migración a base de datos real** (SQL Server, PostgreSQL)
+- **Migración a base de datos real**
+- **Métricas y monitoreo** avanzado
+- **Protección de la API** con rate limiting
 
-## Notas de Desarrollo
+## Documentación Detallada
 
-### Decisiones de Arquitectura
+Para información más específica sobre cada componente del proyecto, consulta los READMEs correspondientes:
 
-- **Base de datos en memoria**: Cumple el requisito de "mock the database"
-- **Patrón Repository**: Separación clara de responsabilidades
-- **DTOs**: Transferencia segura de datos entre capas
-- **Validaciones**: Data Annotations para validación de entrada
+- **📁 [Backend API](./backend/backend/README.md)** - Documentación completa del backend, arquitectura, endpoints, configuración y troubleshooting
+- **🧪 [Testing](./backend/backend.Tests/README.md)** - Documentación completa de las pruebas unitarias e integración, cobertura y mejores prácticas
 
-### Buenas Prácticas Implementadas
+## Author
 
-- **Inyección de dependencias** para servicios
-- **Manejo de errores** robusto y consistente
-- **Documentación XML** para IntelliSense
-- **Código limpio** y mantenible
-- **Separación de responsabilidades** clara
+**Lorelay Pricop Florescu**  
+Graduate in Interactive Technologies and Project Manager with experience in .NET, Python, Angular, Azure DevOps, AI, and Agile methodologies.
 
-## Contacto y Soporte
+🔗 [LinkedIn](https://www.linkedin.com/in/lorelaypricop)  
+📧 Contact: lorelaypricop@gmail.com
 
-### Desarrollador
-- **Proyecto**: Prueba técnica para FDSA
-- **Tecnologías**: .NET 9, Entity Framework Core, Angular
-- **Arquitectura**: API REST, SPA, Clean Architecture
-
----
-
-**HotelBediaX** - Portal de gestión de destinos turísticos desarrollado con las mejores prácticas y tecnologías modernas.
+# Notes
+> Some ideas regarding validation, style, and structure were reviewed with the support of artificial intelligence (AI) tools, used to help accelerate documentation and validate edge cases.
