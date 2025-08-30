@@ -1,0 +1,292 @@
+# =============================================================================
+# .NET / C# / ASP.NET Core
+# =============================================================================
+
+# Build outputs
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Ll]og/
+
+# Compiled files
+*.dll
+*.exe
+*.pdb
+*.cache
+*.tmp
+*.temp
+*.log
+*.swp
+*.swo
+*~
+
+# User-specific files
+*.user
+*.suo
+*.csproj.user
+*.csproj.vspscc
+*.userprefs
+*.usertasks
+*.pidb
+*.booproj
+*.svd
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+*.rsuser
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+!packages/build/
+!packages/repositories.config
+.nuget/
+.nuget/packages/
+.nuget/targets/
+.nuget/tools/
+
+# Entity Framework
+*.edmx.diagram
+*.edmx.sql
+
+# Mono
+mono_crash.*
+
+# =============================================================================
+# IDEs and Editors
+# =============================================================================
+
+# Visual Studio
+.vs/
+*.ncrunch*
+*.ncrunchsolution
+*.DotSettings
+*.DotSettings.user
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+.vscode-test
+
+# Other IDEs
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# =============================================================================
+# Node.js / Angular / Frontend
+# =============================================================================
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Angular specific
+dist/
+tmp/
+out-tsc/
+bazel-out/
+.angular/cache/
+.sass-cache/
+connect.lock
+coverage/
+libpeerconnection.log
+testem.log
+typings/
+
+# Angular profiling
+chrome-profiler-events*.json
+speed-measure-plugin*.json
+
+# TypeScript
+*.tsbuildinfo
+
+# Build tools
+.grunt/
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional npm cache
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# Yarn
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+.yarn-integrity
+
+# Package managers
+*.tgz
+bower_components/
+jspm_packages/
+
+# =============================================================================
+# Environment and Configuration
+# =============================================================================
+
+# Environment variables
+.env
+.env.*
+!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Docker
+docker-compose.override.yml
+
+# =============================================================================
+# Testing and Coverage
+# =============================================================================
+
+# Coverage reports
+coverage/
+*.lcov
+.nyc_output/
+
+# Test results
+test-results/
+TestResults/
+
+# =============================================================================
+# Database
+# =============================================================================
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+*.ndf
+*.bak
+*.trn
+
+# =============================================================================
+# Documentation and API
+# =============================================================================
+
+# Generated API docs
+swagger.json
+swagger.yaml
+openapi.json
+openapi.yaml
+
+# =============================================================================
+# System Files
+# =============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+
+# =============================================================================
+# Temporary and Cache Files
+# =============================================================================
+
+# General cache
+.cache/
+.parcel-cache/
+
+# Temporary folders
+tmp/
+temp/
+
+# Logs
+logs/
+*.log
+
+# =============================================================================
+# Framework-specific (if needed in future)
+# =============================================================================
+
+# Next.js
+.next/
+
+# Nuxt.js
+.nuxt/
+
+# Gatsby
+public/
+
+# Storybook
+.out/
+.storybook-out/
+
+# Serverless
+.serverless/
+
+# FuseBox
+.fusebox/
+
+# DynamoDB Local
+.dynamodb/
+
+# TernJS
+.tern-port
+
+# =============================================================================
+# Project-specific exclusions
+# =============================================================================
+
+# Keep important config files
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Keep example files
+!.env.example
+!docker-compose.example.yml
