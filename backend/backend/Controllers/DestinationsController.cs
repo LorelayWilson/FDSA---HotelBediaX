@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.DTOs;
 using backend.Services;
+using backend.Commands;
+using backend.Queries;
+using MediatR;
 using Serilog;
 
 namespace backend.Controllers
@@ -9,12 +12,12 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class DestinationsController : ControllerBase
     {
-        private readonly IDestinationService _destinationService;
+        private readonly IMediator _mediator;
         private readonly ILogger<DestinationsController> _logger;
 
-        public DestinationsController(IDestinationService destinationService, ILogger<DestinationsController> logger)
+        public DestinationsController(IMediator mediator, ILogger<DestinationsController> logger)
         {
-            _destinationService = destinationService;
+            _mediator = mediator;
             _logger = logger;
         }
 
@@ -31,7 +34,8 @@ namespace backend.Controllers
         public async Task<ActionResult<PagedResultDto<DestinationDto>>> GetDestinations(
             [FromQuery] DestinationFilterDto filter)
         {
-            var result = await _destinationService.GetDestinationsAsync(filter);
+            var query = new GetDestinationsQuery { Filter = filter };
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
 
@@ -49,7 +53,8 @@ namespace backend.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult<DestinationDto>> GetDestination(int id)
         {
-            var destination = await _destinationService.GetDestinationByIdAsync(id);
+            var query = new GetDestinationByIdQuery { Id = id };
+            var destination = await _mediator.Send(query);
             
             if (destination == null)
             {
@@ -80,7 +85,8 @@ namespace backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            var destination = await _destinationService.CreateDestinationAsync(createDto);
+            var command = new CreateDestinationCommand { CreateDestinationDto = createDto };
+            var destination = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetDestination), new { id = destination.ID }, destination);
         }
 
@@ -107,7 +113,8 @@ namespace backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            var destination = await _destinationService.UpdateDestinationAsync(id, updateDto);
+            var command = new UpdateDestinationCommand { Id = id, UpdateDestinationDto = updateDto };
+            var destination = await _mediator.Send(command);
             
             if (destination == null)
             {
@@ -132,7 +139,8 @@ namespace backend.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult> DeleteDestination(int id)
         {
-            var result = await _destinationService.DeleteDestinationAsync(id);
+            var command = new DeleteDestinationCommand { Id = id };
+            var result = await _mediator.Send(command);
             
             if (!result)
             {
@@ -154,7 +162,8 @@ namespace backend.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult<List<string>>> GetCountries()
         {
-            var countries = await _destinationService.GetCountriesAsync();
+            var query = new GetCountriesQuery();
+            var countries = await _mediator.Send(query);
             return Ok(countries);
         }
 
@@ -167,12 +176,10 @@ namespace backend.Controllers
         [HttpGet("types")]
         [ProducesResponseType(typeof(List<string>), 200)]
         [ProducesResponseType(500)]
-        public ActionResult<List<string>> GetDestinationTypes()
+        public async Task<ActionResult<List<string>>> GetDestinationTypes()
         {
-            var types = Enum.GetValues<backend.Models.DestinationType>()
-                .Select(t => t.ToString())
-                .ToList();
-            
+            var query = new GetDestinationTypesQuery();
+            var types = await _mediator.Send(query);
             return Ok(types);
         }
     }

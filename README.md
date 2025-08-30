@@ -14,7 +14,8 @@
 - ✅ **Documentación**: Swagger/OpenAPI integrado
 - ✅ **Testing**: Suite completa de pruebas unitarias e integración
 - ✅ **Logging**: Logging estructurado con Serilog
-- ✅ **Arquitectura**: Código limpio y mantenible
+- ✅ **Arquitectura**: CQRS + Repository Pattern + Unit of Work
+- ✅ **Patrones**: MediatR para desacoplamiento y mantenibilidad
 
 ## Arquitectura básica del Proyecto
 
@@ -131,6 +132,13 @@ dotnet test
 5. **Testing y optimización** de la interfaz
 
 ### Mejoras Implementadas
+
+#### **Arquitectura Avanzada**
+- ✅ **CQRS** - Separación de Commands y Queries para mejor escalabilidad
+- ✅ **Repository Pattern** - Abstracción del acceso a datos
+- ✅ **Unit of Work** - Coordinación de transacciones complejas
+- ✅ **MediatR** - Desacoplamiento entre controladores y lógica de negocio
+- ✅ **Handlers especializados** - Cada operación tiene su handler específico
 
 #### **Logging Estructurado**
 - ✅ **Serilog** configurado con múltiples sinks (Console, File)

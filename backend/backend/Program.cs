@@ -1,6 +1,8 @@
 using backend.Data;
 using backend.Services;
 using backend.Middleware;
+using backend.UnitOfWork;
+using backend.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -48,8 +50,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Busca automáticamente todos los perfiles en el assembly
 builder.Services.AddAutoMapper(typeof(Program));
 
+// Configurar MediatR para CQRS
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+// Registrar repositorios
+builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
+
+// Registrar Unit of Work
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 // Registrar servicios de la aplicación
-builder.Services.AddScoped<IDestinationService, DestinationService>();  // Servicio principal de destinos
 builder.Services.AddScoped<DataSeedService>();                          // Servicio para poblar datos de ejemplo
 
 // Configurar Swagger/OpenAPI para documentación de la API

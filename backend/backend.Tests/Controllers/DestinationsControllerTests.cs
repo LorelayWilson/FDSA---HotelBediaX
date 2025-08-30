@@ -6,6 +6,9 @@ using backend.Controllers;
 using backend.DTOs;
 using backend.Models;
 using backend.Services;
+using backend.Commands;
+using backend.Queries;
+using MediatR;
 using backend.Tests.Helpers;
 
 namespace backend.Tests.Controllers
@@ -16,15 +19,15 @@ namespace backend.Tests.Controllers
     /// </summary>
     public class DestinationsControllerTests
     {
-        private readonly Mock<IDestinationService> _mockService;
+        private readonly Mock<IMediator> _mockMediator;
         private readonly Mock<ILogger<DestinationsController>> _mockLogger;
         private readonly DestinationsController _controller;
 
         public DestinationsControllerTests()
         {
-            _mockService = new Mock<IDestinationService>();
+            _mockMediator = new Mock<IMediator>();
             _mockLogger = new Mock<ILogger<DestinationsController>>();
-            _controller = new DestinationsController(_mockService.Object, _mockLogger.Object);
+            _controller = new DestinationsController(_mockMediator.Object, _mockLogger.Object);
         }
 
         [Fact]
@@ -48,7 +51,7 @@ namespace backend.Tests.Controllers
                 PageSize = 10
             };
 
-            _mockService.Setup(s => s.GetDestinationsAsync(filter))
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetDestinationsQuery>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync(expectedResult);
 
             // Act
@@ -65,7 +68,7 @@ namespace backend.Tests.Controllers
         {
             // Arrange
             var filter = TestDataHelper.CreateTestDestinationFilter();
-            _mockService.Setup(s => s.GetDestinationsAsync(filter))
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetDestinationsQuery>(), It.IsAny<CancellationToken>()))
                        .ThrowsAsync(new Exception("Error de base de datos"));
 
             // Act & Assert
@@ -88,7 +91,7 @@ namespace backend.Tests.Controllers
                 LastModif = DateTime.UtcNow
             };
 
-            _mockService.Setup(s => s.GetDestinationByIdAsync(destinationId))
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetDestinationByIdQuery>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync(expectedDestination);
 
             // Act
@@ -105,7 +108,7 @@ namespace backend.Tests.Controllers
         {
             // Arrange
             var destinationId = 999;
-            _mockService.Setup(s => s.GetDestinationByIdAsync(destinationId))
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetDestinationByIdQuery>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync((DestinationDto?)null);
 
             // Act
@@ -149,7 +152,7 @@ namespace backend.Tests.Controllers
                 LastModif = DateTime.UtcNow
             };
 
-            _mockService.Setup(s => s.CreateDestinationAsync(createDto))
+            _mockMediator.Setup(m => m.Send(It.IsAny<CreateDestinationCommand>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync(createdDestination);
 
             // Act
@@ -209,7 +212,7 @@ namespace backend.Tests.Controllers
                 LastModif = DateTime.UtcNow
             };
 
-            _mockService.Setup(s => s.UpdateDestinationAsync(destinationId, updateDto))
+            _mockMediator.Setup(m => m.Send(It.IsAny<UpdateDestinationCommand>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync(updatedDestination);
 
             // Act
@@ -227,7 +230,7 @@ namespace backend.Tests.Controllers
             // Arrange
             var destinationId = 999;
             var updateDto = TestDataHelper.CreateTestUpdateDestinationDto();
-            _mockService.Setup(s => s.UpdateDestinationAsync(destinationId, updateDto))
+            _mockMediator.Setup(m => m.Send(It.IsAny<UpdateDestinationCommand>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync((DestinationDto?)null);
 
             // Act
@@ -275,7 +278,7 @@ namespace backend.Tests.Controllers
         {
             // Arrange
             var destinationId = 1;
-            _mockService.Setup(s => s.DeleteDestinationAsync(destinationId))
+            _mockMediator.Setup(m => m.Send(It.IsAny<DeleteDestinationCommand>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync(true);
 
             // Act
@@ -290,7 +293,7 @@ namespace backend.Tests.Controllers
         {
             // Arrange
             var destinationId = 999;
-            _mockService.Setup(s => s.DeleteDestinationAsync(destinationId))
+            _mockMediator.Setup(m => m.Send(It.IsAny<DeleteDestinationCommand>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync(false);
 
             // Act
@@ -322,7 +325,7 @@ namespace backend.Tests.Controllers
         {
             // Arrange
             var expectedCountries = new List<string> { "FRA", "JPN", "MEX" };
-            _mockService.Setup(s => s.GetCountriesAsync())
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetCountriesQuery>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync(expectedCountries);
 
             // Act
@@ -351,10 +354,15 @@ namespace backend.Tests.Controllers
         }
 
         [Fact]
-        public void GetDestinationTypes_ReturnsOkResult()
+        public async Task GetDestinationTypes_ReturnsOkResult()
         {
+            // Arrange
+            var expectedTypes = new List<string> { "Beach", "Mountain", "City", "Cultural", "Adventure", "Relax" };
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetDestinationTypesQuery>(), It.IsAny<CancellationToken>()))
+                       .ReturnsAsync(expectedTypes);
+
             // Act
-            var result = _controller.GetDestinationTypes();
+            var result = await _controller.GetDestinationTypes();
 
             // Assert
             result.Result.Should().BeOfType<OkObjectResult>();
@@ -370,17 +378,15 @@ namespace backend.Tests.Controllers
         }
 
         [Fact]
-        public void GetDestinationTypes_WhenExceptionThrown_ReturnsInternalServerError()
+        public async Task GetDestinationTypes_WhenExceptionThrown_ReturnsInternalServerError()
         {
-            // Arrange - Simular una excepción modificando el enum temporalmente
-            // Este test es más complejo de implementar sin modificar el código de producción
-            // Por ahora, verificamos que el método funciona correctamente en condiciones normales
+            // Arrange
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetDestinationTypesQuery>(), It.IsAny<CancellationToken>()))
+                       .ThrowsAsync(new Exception("Error de base de datos"));
             
-            // Act
-            var result = _controller.GetDestinationTypes();
-
-            // Assert
-            result.Result.Should().BeOfType<OkObjectResult>();
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<Exception>(() => _controller.GetDestinationTypes());
+            exception.Message.Should().Be("Error de base de datos");
         }
     }
 }

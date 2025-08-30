@@ -6,7 +6,14 @@ Este es el proyecto principal del backend de HotelBediaX, una API REST desarroll
 
 ```
 backend/
-├── Controllers/           # Controladores de la API
+├── Commands/             # CQRS - Comandos para operaciones de escritura
+│   ├── CreateDestinationCommand.cs
+│   ├── CreateDestinationCommandHandler.cs
+│   ├── UpdateDestinationCommand.cs
+│   ├── UpdateDestinationCommandHandler.cs
+│   ├── DeleteDestinationCommand.cs
+│   └── DeleteDestinationCommandHandler.cs
+├── Controllers/          # Controladores de la API
 │   └── DestinationsController.cs
 ├── Data/                 # Contexto de Entity Framework
 │   └── ApplicationDbContext.cs
@@ -18,10 +25,25 @@ backend/
 │   └── GlobalExceptionMiddleware.cs
 ├── Models/               # Entidades del dominio
 │   └── Destination.cs
-├── Services/             # Lógica de negocio
-│   ├── IDestinationService.cs
-│   ├── DestinationService.cs
+├── Queries/              # CQRS - Queries para operaciones de lectura
+│   ├── GetDestinationsQuery.cs
+│   ├── GetDestinationsQueryHandler.cs
+│   ├── GetDestinationByIdQuery.cs
+│   ├── GetDestinationByIdQueryHandler.cs
+│   ├── GetCountriesQuery.cs
+│   ├── GetCountriesQueryHandler.cs
+│   ├── GetDestinationTypesQuery.cs
+│   └── GetDestinationTypesQueryHandler.cs
+├── Repositories/         # Repository Pattern
+│   ├── IRepository.cs
+│   ├── Repository.cs
+│   ├── IDestinationRepository.cs
+│   └── DestinationRepository.cs
+├── Services/             # Servicios auxiliares
 │   └── DataSeedService.cs
+├── UnitOfWork/           # Unit of Work Pattern
+│   ├── IUnitOfWork.cs
+│   └── UnitOfWork.cs
 ├── Properties/           # Configuración de la aplicación
 │   └── launchSettings.json
 ├── appsettings.json      # Configuración de la aplicación
@@ -36,6 +58,7 @@ backend/
 - **.NET 9**: Framework de desarrollo
 - **Entity Framework Core**: ORM para acceso a datos
 - **AutoMapper**: Mapeo automático entre entidades y DTOs
+- **MediatR**: Implementación de CQRS y patrón Mediator
 - **Swagger/OpenAPI**: Documentación automática de la API
 - **Serilog**: Logging estructurado con múltiples sinks
 - **Base de Datos en Memoria**: Mock database para demostración
@@ -230,20 +253,45 @@ El sistema incluye **10 destinos turísticos reales** con datos completos:
 
 ## Arquitectura del Backend
 
-### Patrón de Diseño Implementado
+### Patrones de Diseño Implementados
 
+#### **CQRS (Command Query Responsibility Segregation)**
 ```
-Controllers → Services → Data Layer
-     ↓           ↓         ↓
-   API REST   Business   Entity Framework
-   Endpoints   Logic      + In-Memory DB
+Controllers → MediatR → Commands/Queries → Handlers → Unit of Work → Repositories → Data Layer
+     ↓           ↓            ↓              ↓           ↓              ↓            ↓
+   API REST   Mediator    CQRS Objects   Business    Transaction   Data Access   Entity Framework
+   Endpoints   Pattern     (Commands/     Logic       Management    Abstraction   + In-Memory DB
+                           Queries)
+```
+
+#### **Repository Pattern + Unit of Work**
+```
+Handlers → Unit of Work → Repositories → Entity Framework
+    ↓           ↓             ↓              ↓
+ Business   Transaction   Data Access    Database
+   Logic     Management   Abstraction    Operations
 ```
 
 ### Componentes Principales
 
-- **`DestinationsController`**: Maneja las peticiones HTTP
-- **`IDestinationService`**: Interfaz de la lógica de negocio
-- **`DestinationService`**: Implementación de la lógica de negocio
+#### **CQRS Layer**
+- **`Commands`**: Operaciones de escritura (Create, Update, Delete)
+- **`Queries`**: Operaciones de lectura (Get, List, Search)
+- **`Handlers`**: Lógica de negocio específica para cada comando/query
+- **`MediatR`**: Patrón Mediator para desacoplar controladores de la lógica de negocio
+
+#### **Repository Layer**
+- **`IRepository<T>`**: Interfaz genérica para operaciones CRUD
+- **`IDestinationRepository`**: Interfaz específica para destinos
+- **`Repository<T>`**: Implementación genérica del patrón Repository
+- **`DestinationRepository`**: Implementación específica con operaciones especializadas
+
+#### **Unit of Work Layer**
+- **`IUnitOfWork`**: Coordina transacciones y repositorios
+- **`UnitOfWork`**: Implementación que mantiene consistencia de datos
+
+#### **Infrastructure Layer**
+- **`DestinationsController`**: Maneja las peticiones HTTP usando MediatR
 - **`ApplicationDbContext`**: Contexto de Entity Framework
 - **`DataSeedService`**: Población automática de datos de ejemplo
 - **`GlobalExceptionMiddleware`**: Manejo centralizado de errores
@@ -253,11 +301,33 @@ Controllers → Services → Data Layer
 ### Paquetes NuGet Utilizados
 
 ```xml
+<!-- Core ASP.NET -->
 <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
 <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+
+<!-- Entity Framework -->
 <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
 <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.8" />
+
+<!-- AutoMapper -->
 <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+
+<!-- CQRS and Mediator -->
+<PackageReference Include="MediatR" Version="12.4.1" />
+<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+
+<!-- Validation -->
+<PackageReference Include="FluentValidation" Version="11.9.2" />
+<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
+
+<!-- Logging -->
+<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+<PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+<PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0" />
+<PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.3" />
 ```
 
 ### Configuración de Servicios
@@ -265,6 +335,9 @@ Controllers → Services → Data Layer
 - **CORS**: Configurado para Angular (puerto 4200)
 - **Entity Framework**: Base de datos en memoria con índices optimizados
 - **AutoMapper**: Mapeo automático entre entidades y DTOs
+- **MediatR**: Configuración automática de handlers CQRS
+- **Repositories**: Registro de repositorios genéricos y específicos
+- **Unit of Work**: Coordinación de transacciones
 - **Swagger**: Documentación automática de la API
 - **Middleware**: Manejo global de excepciones
 
@@ -358,6 +431,26 @@ Content-Type: application/json
 
 ## Mejoras de Arquitectura Implementadas
 
+### 🏗️ **Patrones Arquitectónicos Avanzados**
+
+#### **CQRS (Command Query Responsibility Segregation)**
+- **✅ Separación de Responsabilidades**: Commands para escritura, Queries para lectura
+- **✅ Escalabilidad**: Optimización independiente de operaciones de lectura y escritura
+- **✅ Mantenibilidad**: Lógica de negocio organizada en handlers específicos
+- **✅ Testabilidad**: Cada handler puede ser probado de forma aislada
+
+#### **Repository Pattern + Unit of Work**
+- **✅ Abstracción de Datos**: Separación entre lógica de negocio y acceso a datos
+- **✅ Transacciones Coordinadas**: Manejo consistente de operaciones complejas
+- **✅ Reutilización**: Repositorio genérico para operaciones CRUD básicas
+- **✅ Flexibilidad**: Fácil cambio de implementación de base de datos
+
+#### **MediatR Pattern**
+- **✅ Desacoplamiento**: Controladores independientes de la lógica de negocio
+- **✅ Single Responsibility**: Cada handler tiene una responsabilidad específica
+- **✅ Extensibilidad**: Fácil agregar nuevos comportamientos (logging, validación, etc.)
+- **✅ Pipeline Behaviors**: Interceptores para cross-cutting concerns
+
 ### 🚀 **Refactoring y Optimizaciones**
 
 - **✅ Middleware de Manejo de Errores Global**: Eliminación de código repetitivo en controladores
@@ -407,14 +500,20 @@ public class GlobalExceptionMiddleware
 ### Decisiones de Arquitectura
 
 - **Base de datos en memoria**: Cumple el requisito de "mock the database"
-- **Patrón Service**: Separación clara de responsabilidades
+- **CQRS**: Separación clara entre operaciones de lectura y escritura
+- **Repository Pattern**: Abstracción del acceso a datos
+- **Unit of Work**: Coordinación de transacciones complejas
+- **MediatR**: Desacoplamiento entre controladores y lógica de negocio
 - **DTOs**: Transferencia segura de datos entre capas
 - **Validaciones**: Data Annotations para validación de entrada
 - **Middleware**: Manejo centralizado de cross-cutting concerns
 
 ### Buenas Prácticas Implementadas
 
-- **Inyección de dependencias** para servicios
+- **Inyección de dependencias** para todos los servicios
+- **CQRS** para separación de responsabilidades
+- **Repository Pattern** para abstracción de datos
+- **Unit of Work** para transacciones coordinadas
 - **Manejo de errores** robusto y consistente
 - **Documentación XML** para IntelliSense
 - **Código limpio** y mantenible
