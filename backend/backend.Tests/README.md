@@ -2,23 +2,41 @@
 
 Este proyecto contiene los tests unitarios y de integración para el backend de HotelBediaX.
 
-## Estructura del Proyecto
+## Estructura del Proyecto - Tests para Arquitectura Hexagonal
 
 ```
 backend.Tests/
-├── Controllers/           # Tests para controladores
+├── Controllers/           # Tests para controladores (Presentation Layer)
 │   └── DestinationsControllerTests.cs
-├── Services/             # Tests para servicios
+├── Services/             # Tests para servicios (Application/Infrastructure Layer)
 │   ├── DestinationServiceTests.cs
 │   └── DataSeedServiceTests.cs
-├── Mapping/              # Tests para AutoMapper
+├── Mapping/              # Tests para AutoMapper (Application Layer)
 │   └── AutoMapperProfileTests.cs
-├── Integration/          # Tests de integración
+├── Integration/          # Tests de integración (End-to-End)
 │   └── DestinationsControllerIntegrationTests.cs
 ├── Helpers/              # Clases helper para tests
 │   └── TestDataHelper.cs
 └── README.md
 ```
+
+### **Tests por Capa de Arquitectura Hexagonal**
+
+#### **Presentation Layer Tests**
+- **DestinationsControllerTests**: Tests unitarios para controladores
+- **Integration Tests**: Tests de integración end-to-end
+
+#### **Application Layer Tests**
+- **AutoMapperProfileTests**: Tests para mapeo de DTOs
+- **Command/Query Handler Tests**: Tests para casos de uso (futuro)
+
+#### **Infrastructure Layer Tests**
+- **DataSeedServiceTests**: Tests para servicios de infraestructura
+- **Repository Tests**: Tests para repositorios (futuro)
+
+#### **Domain Layer Tests**
+- **Entity Tests**: Tests para entidades del dominio (futuro)
+- **Business Logic Tests**: Tests para lógica de negocio (futuro)
 
 ## Tecnologías Utilizadas
 

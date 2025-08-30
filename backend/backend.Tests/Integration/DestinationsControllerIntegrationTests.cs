@@ -4,9 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Json;
 using Xunit;
 using FluentAssertions;
-using backend.Data;
-using backend.DTOs;
-using backend.Models;
+using backend.Infrastructure.Data;
+using backend.Application.DTOs;
+using backend.Domain.Entities;
+using backend.Domain.Enums;
 
 namespace backend.Tests.Integration
 {

@@ -1,5 +1,6 @@
-using backend.Models;
-using backend.DTOs;
+using backend.Domain.Entities;
+using backend.Domain.Enums;
+using backend.Application.DTOs;
 
 namespace backend.Tests.Helpers
 {
@@ -86,6 +87,22 @@ namespace backend.Tests.Helpers
                 Description = "Descripción actualizada de Barcelona",
                 CountryCode = "ESP",
                 Type = DestinationType.City
+            };
+        }
+
+        /// <summary>
+        /// Crea un DTO de destino de prueba
+        /// </summary>
+        public static DestinationDto CreateTestDestinationDto()
+        {
+            return new DestinationDto
+            {
+                ID = 1,
+                Name = "Cancún",
+                Description = "Hermosa playa en el Caribe mexicano",
+                CountryCode = "MEX",
+                Type = DestinationType.Beach,
+                LastModif = DateTime.UtcNow.AddDays(-1)
             };
         }
 

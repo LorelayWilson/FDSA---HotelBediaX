@@ -1,8 +1,9 @@
-using backend.Data;
-using backend.Services;
-using backend.Middleware;
-using backend.UnitOfWork;
-using backend.Repositories;
+using backend.Infrastructure.Data;
+using backend.Infrastructure.Services;
+using backend.Presentation.Middleware;
+using backend.Infrastructure.UnitOfWork;
+using backend.Infrastructure.Repositories;
+using backend.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Microsoft.AspNetCore.Mvc;
