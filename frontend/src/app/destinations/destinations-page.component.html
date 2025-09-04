@@ -1,11 +1,4 @@
 <div class="layout">
-  <app-alert 
-    [show]="alert().show" 
-    [type]="alert().type" 
-    [message]="alert().message"
-    (dismissed)="onAlertDismissed()">
-  </app-alert>
-
   <aside class="sidebar">
     <h3>Filtros</h3>
     <input 
@@ -28,6 +21,13 @@
   </aside>
 
   <section class="content">
+    <app-alert 
+      [show]="alert().show" 
+      [type]="alert().type" 
+      [message]="alert().message"
+      (dismissed)="onAlertDismissed()">
+    </app-alert>
+    
     <h2>Destinos Turísticos</h2>
     
     <app-loading [isLoading]="loading()"></app-loading>
@@ -51,12 +51,12 @@
       </thead>
       <tbody>
         @for (destination of destinations(); track destination.id) {
-          <tr (click)="selectRow(destination.id)" [class.selected]="selectedId() === destination.id">
+          <tr (click)="selectRow(destination.id!)" [class.selected]="selectedId() === destination.id">
             <td>{{ destination.id }}</td>
             <td>{{ destination.name }}</td>
             <td>{{ destination.description }}</td>
             <td>{{ destination.countryCode }}</td>
-            <td>{{ getTypeLabel(destination.type) }}</td>
+            <td>{{ getTypeLabel(destination.type?.toString() || '') }}</td>
             <td>{{ destination.lastModif | date:'dd/MM/yyyy' }}</td>
           </tr>
         }
