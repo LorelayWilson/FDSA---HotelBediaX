@@ -2,8 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { ApiService } from '../services/api.service';
-import { Destination, DestinationFilter, DestinationType, CreateDestinationDto, UpdateDestinationDto } from '../models/destination.model';
+import { DestinationDto, CreateDestinationDto, UpdateDestinationDto, DestinationType, DestinationDtoPagedResultDto, ApiClient } from '../services/api-client';
 import { LoadingComponent } from '../shared/loading/loading.component';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { ButtonComponent } from '../shared/button/button.component';
@@ -16,11 +15,11 @@ import { ButtonComponent } from '../shared/button/button.component';
   styleUrls: ['./destinations-page.component.css']
 })
 export class DestinationsPageComponent implements OnInit {
-  private readonly apiService = inject(ApiService);
+  private readonly apiService = inject(ApiClient);
 
   // Estado de filtros y datos
-  filter = signal<DestinationFilter>({ page: 1, pageSize: 20 });
-  destinations = signal<Destination[]>([]);
+  filter = signal<{ page?: number; pageSize?: number; search?: string; countryCode?: string; type?: string }>({ page: 1, pageSize: 20 });
+  destinations = signal<DestinationDto[]>([]);
   totalCount = signal<number>(0);
   loading = signal<boolean>(false);
   selectedId = signal<number | null>(null);
@@ -35,7 +34,7 @@ export class DestinationsPageComponent implements OnInit {
   // Modelos para ngModel
   searchTerm = '';
   countryCode = '';
-  type: DestinationType | '' = '';
+  type: string = '';
   pageSize = 20;
 
   // Opciones para selects
@@ -49,16 +48,16 @@ export class DestinationsPageComponent implements OnInit {
   }
 
   loadCountries(): void {
-    this.apiService.getCountries().subscribe({
-      next: countries => this.countries.set(countries),
-      error: error => console.error('Error al cargar países:', error)
+    this.apiService.countries().subscribe({
+      next: (countries: string[]) => this.countries.set(countries),
+      error: (error: any) => console.error('Error al cargar países:', error)
     });
   }
 
   loadDestinationTypes(): void {
-    this.apiService.getDestinationTypes().subscribe({
-      next: types => this.destinationTypes.set(types),
-      error: error => console.error('Error al cargar tipos de destino:', error)
+    this.apiService.types().subscribe({
+      next: (types: string[]) => this.destinationTypes.set(types),
+      error: (error: any) => console.error('Error al cargar tipos de destino:', error)
     });
   }
 
@@ -67,13 +66,19 @@ export class DestinationsPageComponent implements OnInit {
     this.hideAlert();
     
     const currentFilter = this.filter();
-    this.apiService.getDestinations(currentFilter).subscribe({
-      next: response => {
-        this.destinations.set(response.items);
-        this.totalCount.set(response.totalCount);
+    this.apiService.destinationsGET(
+      currentFilter.search,
+      currentFilter.countryCode,
+      currentFilter.type as unknown as DestinationType,
+      currentFilter.page,
+      currentFilter.pageSize
+    ).subscribe({
+      next: (response: DestinationDtoPagedResultDto) => {
+        this.destinations.set(response.items || []);
+        this.totalCount.set(response.totalCount || 0);
         this.loading.set(false);
       },
-      error: (error) => {
+      error: (error: any) => {
         this.loading.set(false);
         this.showAlert('error', 'Error al cargar los destinos: ' + error.message);
       }
@@ -122,19 +127,18 @@ export class DestinationsPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    const newDestination: CreateDestinationDto = {
-      name: 'Nuevo Destino',
-      description: 'Descripción del nuevo destino',
-      countryCode: this.countries()[0] || 'MEX',
-      type: this.destinationTypes()[0] as DestinationType || DestinationType.City
-    };
+    const newDestination = new CreateDestinationDto();
+    newDestination.name = 'Nuevo Destino';
+    newDestination.description = 'Descripción del nuevo destino';
+    newDestination.countryCode = this.countries()[0] || 'MEX';
+    newDestination.type = (this.destinationTypes()[0] as unknown as DestinationType) || DestinationType._0;
 
-    this.apiService.createDestination(newDestination).subscribe({
-      next: (destination) => {
+    this.apiService.destinationsPOST(newDestination).subscribe({
+      next: (destination: DestinationDto) => {
         this.showAlert('success', `Destino "${destination.name}" creado exitosamente`);
         this.loadDestinations();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error al crear destino:', error);
         this.showAlert('error', 'Error al crear el destino');
       }
@@ -147,17 +151,16 @@ export class DestinationsPageComponent implements OnInit {
       return;
     }
 
-    const updateData: UpdateDestinationDto = {
-      name: 'Destino Editado',
-      description: 'Descripción actualizada'
-    };
+    const updateData = new UpdateDestinationDto();
+    updateData.name = 'Destino Editado';
+    updateData.description = 'Descripción actualizada';
 
-    this.apiService.updateDestination(this.selectedId()!, updateData).subscribe({
-      next: (updatedDestination) => {
+    this.apiService.destinationsPUT(this.selectedId()!, updateData).subscribe({
+      next: (updatedDestination: DestinationDto) => {
         this.showAlert('success', `Destino "${updatedDestination.name}" actualizado exitosamente`);
         this.loadDestinations();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error al actualizar destino:', error);
         this.showAlert('error', 'Error al actualizar el destino');
       }
@@ -174,29 +177,30 @@ export class DestinationsPageComponent implements OnInit {
     if (!confirm(`¿Eliminar destino ${id}?`)) return;
     
     this.loading.set(true);
-    this.apiService.deleteDestination(id).subscribe({
+    this.apiService.destinationsDELETE(id).subscribe({
       next: () => {
         this.selectedId.set(null);
         this.loadDestinations();
         this.showAlert('success', 'Destino eliminado correctamente');
       },
-      error: (error) => {
+      error: (error: any) => {
         this.loading.set(false);
         this.showAlert('error', 'Error al eliminar el destino: ' + error.message);
       }
     });
   }
 
-  getTypeLabel(type: DestinationType | string): string {
-    const typeLabels: { [key in DestinationType]: string } = {
-      [DestinationType.Beach]: 'Playa',
-      [DestinationType.Mountain]: 'Montaña',
-      [DestinationType.City]: 'Ciudad',
-      [DestinationType.Cultural]: 'Cultural',
-      [DestinationType.Adventure]: 'Aventura',
-      [DestinationType.Relax]: 'Relajación'
+  getTypeLabel(type: string): string {
+    // Mapeo automático basado en el enum del backend
+    const typeLabels: Record<string, string> = {
+      [DestinationType._0]: 'Playa',
+      [DestinationType._1]: 'Montaña', 
+      [DestinationType._2]: 'Ciudad',
+      [DestinationType._3]: 'Cultural',
+      [DestinationType._4]: 'Aventura',
+      [DestinationType._5]: 'Relajación'
     };
-    return typeLabels[type as DestinationType] || type;
+    return typeLabels[type] || type;
   }
 
   showAlert(type: string, message: string): void {

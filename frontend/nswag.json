@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json.schemastore.org/nswag",
+  "runtime": "Net80",
+  "defaultVariables": null,
+  "documentGenerator": {
+    "fromDocument": {
+      "json": "http://localhost:5259/swagger/v1/swagger.json",
+      "url": "http://localhost:5259/swagger/v1/swagger.json"
+    }
+  },
+  "codeGenerators": {
+    "openApiToTypeScriptClient": {
+      "className": "ApiClient",
+      "moduleName": "",
+      "namespace": "",
+      "typeScriptVersion": 4.3,
+      "template": "Angular",
+      "promiseType": "Promise",
+      "httpClass": "HttpClient",
+      "useSingletonProvider": true,
+      "injectionTokenType": "InjectionToken",
+      "rxJsVersion": 7.0,
+      "dateTimeType": "Date",
+      "nullValue": "Undefined",
+      "generateClientClasses": true,
+      "generateClientInterfaces": true,
+      "generateOptionalParameters": false,
+      "exportTypes": true,
+      "generateBarrelFile": false,
+      "wrapDtoExceptions": true,
+      "exceptionClass": "ApiException",
+      "clientClassVisibility": "public",
+      "typeStyle": "Class",
+      "classTypes": [],
+      "extendedClasses": [],
+      "extensionCode": null,
+      "generateDefaultValues": true,
+      "generateTypeCheckFunctions": false,
+      "enumNameGenerator": "String",
+      "enumValueGenerator": "String",
+      "serviceHost": null,
+      "serviceSchemes": null,
+      "output": "src/app/services/api-client.ts"
+    }
+  }
+}
