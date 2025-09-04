@@ -1,0 +1,72 @@
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-title">Data selector</div>
+    <input class="search" type="text" placeholder="Search" (input)="onSearch(($any($event.target)).value)" />
+    <div class="filters-vertical">
+      <label>Country</label>
+      <select (change)="onFilterChange()" [(ngModel)]="country">
+        <option value="">All</option>
+        @for (c of countries(); track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+      <label>Type</label>
+      <select (change)="onFilterChange()" [(ngModel)]="type">
+        <option value="">All</option>
+        @for (t of types(); track t) {
+          <option [value]="t">{{ t }}</option>
+        }
+      </select>
+    </div>
+  </aside>
+
+  <section class="content">
+    <h2>Destinations</h2>
+    <div class="actions">
+      <button (click)="onCreate()">Create destiny</button>
+      <button (click)="onEdit()" [disabled]="selectedId() === null">Modify destiny</button>
+      <button class="danger" (click)="onRemove()" [disabled]="selectedId() === null">Remove destiny</button>
+    </div>
+
+    <div class="table-wrapper" [class.loading]="loading()">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>CountryCode</th>
+            <th>Type</th>
+            <th>Last Modif</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (d of items(); track d.id) {
+            <tr (click)="selectRow(d.id)" [class.selected]="selectedId() === d.id">
+              <td>{{ d.id }}</td>
+              <td>{{ d.name }}</td>
+              <td>{{ d.description }}</td>
+              <td>{{ d.countryCode }}</td>
+              <td>{{ typeLabel(d.type) }}</td>
+              <td>{{ d.lastModif | date:'yyyy-MM-dd HH:mm' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="paginator">
+      <button (click)="changePage(-1)" [disabled]="(filter().page ?? 1) <= 1">Anterior</button>
+      <span>Página {{ filter().page }} | Total: {{ totalCount() }}</span>
+      <button (click)="changePage(1)">Siguiente</button>
+      <select [(ngModel)]="pageSize" (change)="onFilterChange()">
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="20">20</option>
+        <option [ngValue]="50">50</option>
+        <option [ngValue]="100">100</option>
+      </select>
+    </div>
+  </section>
+</div>
+
+

@@ -1,0 +1,74 @@
+h2 {
+  margin: 0 0 12px 0;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 16px;
+}
+
+.sidebar {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.sidebar-title {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-weight: 600;
+  color: #111827;
+  height: 180px;
+  margin: 8px auto 16px auto;
+}
+
+.search {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.filters-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.table-wrapper {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f3f4f6;
+  text-align: left;
+}
+
+.paginator {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+tr.selected {
+  background: #eff6ff;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.actions .danger {
+  color: #b91c1c;
+}
+

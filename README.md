@@ -7,7 +7,7 @@
 ### Objetivos de la Prueba Técnica
 
 - ✅ **Backend**: API REST con .NET 9
-- ✅ **Frontend**: SPA con Angular (en desarrollo)
+- ✅ **Frontend**: SPA con Angular (módulo Destinations implementado)
 - ✅ **Base de Datos**: Mock database para demostración
 - ✅ **Funcionalidades**: CRUD completo + filtrado + paginación
 - ✅ **Rendimiento**: Optimizado para manejar 200k+ registros
@@ -125,9 +125,9 @@ dotnet run
 
 ### Acceso a la Aplicación
 
-- **API REST v1.0**: `https://localhost:7170/api/v1/destinations`
+- **API REST v1.0**: `http://localhost:5259/api/v1.0/destinations`
 - **Swagger UI**: `https://localhost:7170/swagger` (solo en desarrollo)
-- **Frontend**: `http://localhost:4200` (cuando esté implementado)
+- **Frontend**: `http://localhost:4200`
 
 ## Testing
 
@@ -147,14 +147,31 @@ dotnet test
 - **✅ Tests organizados por capas** de arquitectura hexagonal
 - **✅ Cobertura completa** de todos los componentes
 
-## Frontend - Angular (En Desarrollo)
+## Frontend - Angular
 
-### Funcionalidades Planificadas
-- **Interfaz web moderna** para gestión de destinos
-- **Operaciones CRUD** completas desde la interfaz
-- **Sistema de filtrado** visual
-- **Paginación** para grandes volúmenes de datos
-- **Diseño responsive** para diferentes dispositivos
+### Ejecutar el Frontend
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+El frontend usa un interceptor que apunta al backend en `http://localhost:5259/api/v1.0`. No requiere variables de entorno.
+
+### Rutas y navegación
+
+- Ruta por defecto: `/destinations`
+- Navegación principal en `app.html` (Inicio/Destinos)
+
+### Módulo Destinations (implementado)
+
+- Lista paginada con filtros por texto, país (`countryCode`) y tipo
+- Tabla con columnas: ID, Name, Description, CountryCode, Type, Last Modif
+- Mapeo de `Type` a etiqueta legible usando `/api/v1.0/destinations/types`
+- Selección de fila y acciones básicas: Create (esqueleto), Modify (esqueleto), Remove (operativo con confirmación)
+
+Próximas mejoras sugeridas: formularios de crear/editar con validación reactiva, ordenación por columnas y virtual scroll para datasets muy grandes.
 
 ## Próximos Pasos
 
@@ -201,13 +218,13 @@ Para información más específica sobre cada componente del proyecto, consulta 
 - **[Backend API](./backend/backend/README.md)** - Documentación completa del backend con Arquitectura Hexagonal, endpoints, configuración y troubleshooting
 - **[Testing](./backend/backend.Tests/README.md)** - Documentación completa de las pruebas unitarias e integración, cobertura y mejores prácticas
 
-## Author
+## Autor
 
 **Lorelay Pricop Florescu**  
-Graduate in Interactive Technologies and Project Manager with experience in .NET, Python, Angular, Azure DevOps, AI, and Agile methodologies.
+Graduada en Tecnologías Interactivas y Project Manager con experiencia en .NET, Python, Angular, Azure DevOps, IA y metodologías ágiles.
 
 🔗 [LinkedIn](https://www.linkedin.com/in/lorelaypricop)  
-📧 Contact: lorelaypricop@gmail.com
+📧 Contacto: lorelaypricop@gmail.com
 
-# Notes
-> Some ideas regarding validation, style, and structure were reviewed with the support of artificial intelligence (AI) tools, used to help accelerate documentation and validate edge cases.
+# Notas
+> Algunas ideas relacionadas con validación, estilo y estructura se revisaron con el apoyo de herramientas de inteligencia artificial (IA), utilizadas para acelerar la documentación y validar casos límite.
