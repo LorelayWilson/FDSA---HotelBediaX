@@ -1,70 +1,72 @@
 <div class="layout">
+  <app-alert 
+    [show]="alert().show" 
+    [type]="alert().type" 
+    [message]="alert().message"
+    (dismissed)="onAlertDismissed()">
+  </app-alert>
+
   <aside class="sidebar">
-    <div class="sidebar-title">Data selector</div>
-    <input class="search" type="text" placeholder="Search" (input)="onSearch(($any($event.target)).value)" />
-    <div class="filters-vertical">
-      <label>Country</label>
-      <select (change)="onFilterChange()" [(ngModel)]="country">
-        <option value="">All</option>
-        @for (c of countries(); track c) {
-          <option [value]="c">{{ c }}</option>
-        }
-      </select>
-      <label>Type</label>
-      <select (change)="onFilterChange()" [(ngModel)]="type">
-        <option value="">All</option>
-        @for (t of types(); track t) {
-          <option [value]="t">{{ t }}</option>
-        }
-      </select>
-    </div>
+    <h3>Filtros</h3>
+    <input 
+      type="text" 
+      placeholder="Buscar..." 
+      [(ngModel)]="searchTerm"
+      (keyup.enter)="onSearch()" />
+    <select [(ngModel)]="countryCode" (change)="onFilterChange()">
+      <option value="">Todos los países</option>
+      @for (country of countries(); track country) {
+        <option [value]="country">{{ country }}</option>
+      }
+    </select>
+    <select [(ngModel)]="type" (change)="onFilterChange()">
+      <option value="">Todos los tipos</option>
+      @for (destType of destinationTypes(); track destType) {
+        <option [value]="destType">{{ getTypeLabel(destType) }}</option>
+      }
+    </select>
   </aside>
 
   <section class="content">
-    <h2>Destinations</h2>
+    <h2>Destinos Turísticos</h2>
+    
+    <app-loading [isLoading]="loading()"></app-loading>
+
     <div class="actions">
-      <button (click)="onCreate()">Create destiny</button>
-      <button (click)="onEdit()" [disabled]="selectedId() === null">Modify destiny</button>
-      <button class="danger" (click)="onRemove()" [disabled]="selectedId() === null">Remove destiny</button>
+      <app-button variant="primary" (clicked)="onCreate()">Crear</app-button>
+      <app-button variant="secondary" [disabled]="selectedId() === null" (clicked)="onEdit()">Editar</app-button>
+      <app-button variant="danger" [disabled]="selectedId() === null" (clicked)="onRemove()">Eliminar</app-button>
     </div>
 
-    <div class="table-wrapper" [class.loading]="loading()">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>CountryCode</th>
-            <th>Type</th>
-            <th>Last Modif</th>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>País</th>
+          <th>Tipo</th>
+          <th>Modificado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (destination of destinations(); track destination.id) {
+          <tr (click)="selectRow(destination.id)" [class.selected]="selectedId() === destination.id">
+            <td>{{ destination.id }}</td>
+            <td>{{ destination.name }}</td>
+            <td>{{ destination.description }}</td>
+            <td>{{ destination.countryCode }}</td>
+            <td>{{ getTypeLabel(destination.type) }}</td>
+            <td>{{ destination.lastModif | date:'dd/MM/yyyy' }}</td>
           </tr>
-        </thead>
-        <tbody>
-          @for (d of items(); track d.id) {
-            <tr (click)="selectRow(d.id)" [class.selected]="selectedId() === d.id">
-              <td>{{ d.id }}</td>
-              <td>{{ d.name }}</td>
-              <td>{{ d.description }}</td>
-              <td>{{ d.countryCode }}</td>
-              <td>{{ typeLabel(d.type) }}</td>
-              <td>{{ d.lastModif | date:'yyyy-MM-dd HH:mm' }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+        }
+      </tbody>
+    </table>
 
-    <div class="paginator">
-      <button (click)="changePage(-1)" [disabled]="(filter().page ?? 1) <= 1">Anterior</button>
-      <span>Página {{ filter().page }} | Total: {{ totalCount() }}</span>
-      <button (click)="changePage(1)">Siguiente</button>
-      <select [(ngModel)]="pageSize" (change)="onFilterChange()">
-        <option [ngValue]="10">10</option>
-        <option [ngValue]="20">20</option>
-        <option [ngValue]="50">50</option>
-        <option [ngValue]="100">100</option>
-      </select>
+    <div class="pagination">
+      <app-button variant="secondary" [disabled]="!canGoToPreviousPage()" (clicked)="changePage(-1)">Anterior</app-button>
+      <span>Página {{ filter().page || 1 }} | Total: {{ totalCount() }}</span>
+      <app-button variant="secondary" [disabled]="!canGoToNextPage()" (clicked)="changePage(1)">Siguiente</app-button>
     </div>
   </section>
 </div>

@@ -1,0 +1,4 @@
+<div *ngIf="show" class="alert alert-{{ type }}">
+  {{ message }}
+  <button *ngIf="show" type="button" (click)="onDismiss()">X</button>
+</div>
