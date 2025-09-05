@@ -18,7 +18,7 @@ namespace backend.Application.DTOs
         /// <summary>Código ISO del país (3 caracteres)</summary>
         public string CountryCode { get; set; } = string.Empty;
         /// <summary>Tipo de destino turístico</summary>
-        public string Type { get; set; } = string.Empty;
+        public DestinationType Type { get; set; }
         /// <summary>Fecha de última modificación</summary>
         public DateTime LastModif { get; set; }
     }
