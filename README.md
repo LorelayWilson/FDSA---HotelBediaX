@@ -26,32 +26,30 @@
 HotelBediaX/
 ├── backend/                 # API REST con .NET 9
 │   ├── backend/            # Proyecto principal con Arquitectura Hexagonal
-│   │   ├── Domain/         # Lógica de negocio pura
-│   │   │   ├── Entities/   # Entidades del dominio
-│   │   │   └── Enums/      # Enumeraciones del dominio
-│   │   ├── Application/    # Casos de uso y reglas de aplicación
-│   │   │   ├── Commands/   # Comandos CQRS
-│   │   │   ├── Queries/    # Consultas CQRS
-│   │   │   ├── DTOs/       # Data Transfer Objects
-│   │   │   └── Mapping/    # Configuración de AutoMapper
-│   │   ├── Infrastructure/ # Persistencia y servicios externos
-│   │   │   ├── Data/       # Contexto de Entity Framework
-│   │   │   ├── Repositories/ # Implementaciones de repositorios
-│   │   │   ├── Services/   # Servicios de infraestructura
-│   │   │   └── UnitOfWork/ # Implementación de Unit of Work
+│   │   ├── Domain/         # Entidades, enums e interfaces
+│   │   ├── Application/    # Commands, Queries, DTOs y Mapping
+│   │   ├── Infrastructure/ # Repositorios, contexto EF y servicios
 │   │   ├── Presentation/   # Controladores y middleware
-│   │   │   ├── Controllers/ # Controladores de API
-│   │   │   └── Middleware/ # Middleware personalizado
-│   │   └── Program.cs      # Punto de entrada de la aplicación
-│   ├── backend.Tests/      # Proyecto de pruebas organizado por capas
-│   │   ├── Domain/         # Tests de entidades y enums
-│   │   ├── Application/    # Tests de comandos, queries y mapeos
-│   │   ├── Infrastructure/ # Tests de repositorios y servicios
+│   │   └── Program.cs      # Configuración y startup
+│   ├── backend.Tests/      # Suite completa de pruebas
+│   │   ├── Domain/         # Tests de entidades
+│   │   ├── Application/    # Tests de CQRS
+│   │   ├── Infrastructure/ # Tests de repositorios
 │   │   ├── Presentation/   # Tests de controladores
-│   │   ├── Integration/    # Tests de integración
-│   │   └── Helpers/        # Utilidades para tests
-│   └── backend.sln         # Solución de Visual Studio
-├── frontend/               # Aplicación Angular
+│   │   └── Integration/    # Tests end-to-end
+│   └── backend.sln         # Solución Visual Studio
+├── frontend/               # Aplicación Angular 18
+│   ├── src/               # Código fuente
+│   │   ├── app/           # Módulos y componentes
+│   │   │   ├── destinations/    # Módulo de destinos
+│   │   │   ├── shared/         # Componentes compartidos
+│   │   │   ├── services/       # Servicios Angular
+│   │   │   └── interceptors/   # Interceptores HTTP
+│   │   ├── index.html     # Página principal
+│   │   └── main.ts        # Bootstrap de la app
+│   ├── public/            # Assets estáticos
+│   ├── package.json       # Dependencias Node.js
+│   └── angular.json       # Configuración Angular
 └── README.md               # Este archivo
 ```
 
@@ -103,9 +101,15 @@ El sistema incluye **10 destinos turísticos reales** con datos completos:
 
 ### Prerrequisitos
 
+#### Backend
 - **.NET 9 SDK** instalado
 - **Visual Studio 2022** o **VS Code** (recomendado)
-- **Node.js** (para el frontend)
+
+#### Frontend
+- **Node.js** (versión 18 o superior)
+- **npm** (incluido con Node.js)
+- **Angular 18** (versión específica del proyecto)
+- **Angular CLI** 
 
 ### Ejecutar el Backend
 
