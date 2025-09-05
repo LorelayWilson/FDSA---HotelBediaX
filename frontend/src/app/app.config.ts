@@ -14,8 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([
         (req, next) => {
-          // Base URL del backend + versionado
-          const baseUrl = 'http://localhost:5259/api/v1.0';
+          const baseUrl = 'http://localhost:5259';
           const isAbsolute = /^https?:\/\//i.test(req.url);
           const url = isAbsolute ? req.url : `${baseUrl}/${req.url.replace(/^\//, '')}`;
           return next(req.clone({ url }));
@@ -29,7 +28,7 @@ export const appConfig: ApplicationConfig = {
     },
     {
       provide: API_BASE_URL,
-      useValue: 'http://localhost:5259/api/v1.0'
+      useValue: 'http://localhost:5259'
     }
   ]
 };
