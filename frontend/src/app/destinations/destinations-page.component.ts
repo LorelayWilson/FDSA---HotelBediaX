@@ -41,6 +41,9 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
   countryCode = '';
   type: string = '';
   pageSize = 5;
+  
+  // Opciones para selectores
+  pageSizeOptions = [5, 10, 20, 50, 100];
 
   // Opciones para selects
   destinationTypes = signal<string[]>([]);
@@ -139,6 +142,15 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
       page: 1,
       countryCode: this.countryCode || undefined,
       type: this.type || undefined,
+      pageSize: this.pageSize
+    }));
+    this.loadDestinations();
+  }
+
+  onPageSizeChange(): void {
+    this.filter.update(f => ({
+      ...f,
+      page: 1,
       pageSize: this.pageSize
     }));
     this.loadDestinations();

@@ -98,6 +98,26 @@ tr.selected {
   display: flex;
   gap: 10px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.page-size-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.page-size-selector label {
+  font-size: 14px;
+  color: #666;
+}
+
+.page-size-selector select {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
 @media (max-width: 768px) {

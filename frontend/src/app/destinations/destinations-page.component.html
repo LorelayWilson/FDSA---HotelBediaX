@@ -68,6 +68,15 @@
       <app-button variant="secondary" [disabled]="!canGoToPreviousPage()" (clicked)="changePage(-1)">Anterior</app-button>
       <span>Página {{ filter().page || 1 }} | Total: {{ totalCount() }}</span>
       <app-button variant="secondary" [disabled]="!canGoToNextPage()" (clicked)="changePage(1)">Siguiente</app-button>
+      
+      <div class="page-size-selector">
+        <label>Mostrar:</label>
+        <select [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+          @for (size of pageSizeOptions; track size) {
+            <option [value]="size">{{ size }}</option>
+          }
+        </select>
+      </div>
     </div>
   </section>
 </div>
