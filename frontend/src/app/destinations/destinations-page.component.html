@@ -4,7 +4,8 @@
     <input 
       type="text" 
       placeholder="Buscar..." 
-      [(ngModel)]="searchTerm"
+      [ngModel]="searchTerm"
+      (ngModelChange)="onSearchChange($event)"
       (keyup.enter)="onSearch()" />
     <select [(ngModel)]="countryCode" (change)="onFilterChange()">
       <option value="">Todos los países</option>

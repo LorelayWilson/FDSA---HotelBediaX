@@ -1,8 +1,10 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DestinationDto, CreateDestinationDto, UpdateDestinationDto, DestinationType, DestinationDtoPagedResultDto, ApiClient } from '../services/api-client';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { LoadingComponent } from '../shared/loading/loading.component';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { ButtonComponent } from '../shared/button/button.component';
@@ -15,7 +17,7 @@ import { ModalComponent } from '../shared/modal/modal.component';
   templateUrl: './destinations-page.component.html',
   styleUrls: ['./destinations-page.component.css']
 })
-export class DestinationsPageComponent implements OnInit {
+export class DestinationsPageComponent implements OnInit, OnDestroy {
   private readonly apiService = inject(ApiClient);
 
   // Estado de filtros y datos
@@ -49,10 +51,29 @@ export class DestinationsPageComponent implements OnInit {
   formModel: { id?: number; name: string; description: string; countryCode: string; type: number } =
     { name: '', description: '', countryCode: '', type: 0 };
 
+  // Búsqueda con debounce
+  private searchChange$ = new Subject<string>();
+  private subscriptions: Subscription[] = [];
+
   ngOnInit(): void {
     this.loadCountries();
     this.loadDestinationTypes();
     this.loadDestinations();
+
+    // Debounce de la búsqueda
+    const sub = this.searchChange$
+      .pipe(debounceTime(700), distinctUntilChanged())
+      .subscribe(term => {
+        this.filter.update(f => ({ ...f, search: term || undefined, page: 1 }));
+        this.loadDestinations();
+      });
+    this.subscriptions.push(sub);
+  }
+
+  ngOnDestroy(): void {
+    for (const s of this.subscriptions) {
+      try { s.unsubscribe(); } catch {}
+    }
   }
 
   loadCountries(): void {
@@ -100,6 +121,11 @@ export class DestinationsPageComponent implements OnInit {
       page: 1 
     }));
     this.loadDestinations();
+  }
+
+  onSearchChange(value: string): void {
+    this.searchTerm = value;
+    this.searchChange$.next(value);
   }
 
   onFilterChange(): void {
