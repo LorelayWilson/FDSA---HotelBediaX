@@ -17,7 +17,8 @@ namespace backend.Application.Mapping
         {
             // Mapeo de entidad Destination a DestinationDto
             // AutoMapper mapea automáticamente las propiedades con el mismo nombre
-            CreateMap<Destination, DestinationDto>();
+            CreateMap<Destination, DestinationDto>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.ToString()));
             
             // Mapeo de CreateDestinationDto a entidad Destination
             // Se usa para crear nuevos destinos
