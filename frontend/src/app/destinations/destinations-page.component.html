@@ -57,7 +57,7 @@
             <td><a [routerLink]="['/destinations', destination.id]" (click)="$event.stopPropagation()" class="destination-link">{{ destination.name }}</a></td>
             <td>{{ destination.description }}</td>
             <td>{{ destination.countryCode }}</td>
-            <td>{{ getTypeLabel(destination.type?.toString() || '') }}</td>
+            <td>{{ getTypeLabel(destination.type || 0) }}</td>
             <td>{{ destination.lastModif | date:'dd/MM/yyyy' }}</td>
           </tr>
         }
@@ -108,7 +108,7 @@
         Tipo
         <select name="type" [(ngModel)]="formModel.type" required>
           @for (destType of destinationTypes(); track destType; let i = $index) {
-            <option [ngValue]="i">{{ getTypeLabel(i) }}</option>
+            <option [ngValue]="i">{{ destType }}</option>
           }
         </select>
       </label>

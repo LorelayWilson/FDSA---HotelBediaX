@@ -39,7 +39,7 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
   // Modelos para ngModel
   searchTerm = '';
   countryCode = '';
-  type: string = '';
+  type: DestinationType = DestinationType._0;
   pageSize = 5;
   
   // Opciones para selectores
@@ -141,7 +141,7 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
       ...f,
       page: 1,
       countryCode: this.countryCode || undefined,
-      type: this.type || undefined,
+      type: this.type ? String(this.type) : undefined,
       pageSize: this.pageSize
     }));
     this.loadDestinations();
@@ -245,7 +245,7 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
       name: current.name || '',
       description: current.description || '',
       countryCode: current.countryCode || '',
-      type: (current.type as unknown as number) ?? 0
+      type: this.getIndexFromDestinationType(current.type ?? DestinationType._0)
     };
     this.isModalOpen.set(true);
   }
@@ -261,12 +261,16 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
       return;
     }
     this.loading.set(true);
+    
+    // Convertir el índice del formulario al enum correspondiente
+    const typeEnum = this.getDestinationTypeFromIndex(model.type);
+    
     if (this.isEditing()) {
       const dto = new UpdateDestinationDto();
       dto.name = model.name.trim();
       dto.description = model.description.trim();
       dto.countryCode = model.countryCode;
-      dto.type = model.type as DestinationType;
+      dto.type = typeEnum;
       this.apiService.destinationsPUT(model.id!, dto).subscribe({
         next: (updated: DestinationDto) => {
           this.loading.set(false);
@@ -284,7 +288,7 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
       dto.name = model.name.trim();
       dto.description = model.description.trim();
       dto.countryCode = model.countryCode;
-      dto.type = model.type as DestinationType;
+      dto.type = typeEnum;
       this.apiService.destinationsPOST(dto).subscribe({
         next: (created: DestinationDto) => {
           this.loading.set(false);
@@ -367,8 +371,40 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
     this.onConfirmClose();
   }
 
-  getTypeLabel(type: string | number): string {
-    return String(type);
+  getTypeLabel(type: string | number | DestinationType): string {
+    const typeStrings = this.destinationTypes();
+    
+    // Si es un número (índice del enum), obtener el string correspondiente
+    if (typeof type === 'number') {
+      return typeStrings[type] || String(type);
+    }
+    
+    // Si es un string, devolverlo tal como está
+    if (typeof type === 'string') {
+      return type;
+    }
+    
+    // Si es un enum DestinationType, convertir a número y luego a string
+    if (type !== null && type !== undefined) {
+      const enumIndex = Number(type);
+      if (!isNaN(enumIndex) && enumIndex >= 0 && enumIndex < typeStrings.length) {
+        return typeStrings[enumIndex] || String(type);
+      }
+    }
+    
+    return String(type || '');
+  }
+
+  private getDestinationTypeFromIndex(index: number): DestinationType {
+    // Mapear el índice del formulario al enum correspondiente
+    const enumValues = Object.values(DestinationType).filter(v => typeof v === 'number') as DestinationType[];
+    return enumValues[index] || DestinationType._0;
+  }
+
+  private getIndexFromDestinationType(type: DestinationType): number {
+    // Mapear el enum al índice del formulario
+    const enumValues = Object.values(DestinationType).filter(v => typeof v === 'number') as DestinationType[];
+    return enumValues.indexOf(type);
   }
 
   showAlert(type: string, message: string): void {
