@@ -21,13 +21,14 @@ namespace backend.Infrastructure.Repositories
         {
             var query = _dbSet.AsQueryable();
 
-            // Aplicar filtro de búsqueda por texto
+            // Aplicar filtro de búsqueda por texto (case-insensitive)
             if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
             {
+                var searchTerm = filter.SearchTerm.ToLower();
                 query = query.Where(d => 
-                    d.Name.Contains(filter.SearchTerm) || 
-                    d.Description.Contains(filter.SearchTerm) ||
-                    d.CountryCode.Contains(filter.SearchTerm));
+                    d.Name.ToLower().Contains(searchTerm) || 
+                    d.Description.ToLower().Contains(searchTerm) ||
+                    d.CountryCode.ToLower().Contains(searchTerm));
             }
 
             // Aplicar filtro por código de país específico
@@ -80,11 +81,12 @@ namespace backend.Infrastructure.Repositories
 
         public async Task<List<Destination>> SearchDestinationsAsync(string searchTerm)
         {
+            var lowerSearchTerm = searchTerm.ToLower();
             return await _dbSet
                 .Where(d => 
-                    d.Name.Contains(searchTerm) || 
-                    d.Description.Contains(searchTerm) ||
-                    d.CountryCode.Contains(searchTerm))
+                    d.Name.ToLower().Contains(lowerSearchTerm) || 
+                    d.Description.ToLower().Contains(lowerSearchTerm) ||
+                    d.CountryCode.ToLower().Contains(lowerSearchTerm))
                 .OrderBy(d => d.Name)
                 .ToListAsync();
         }
