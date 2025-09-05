@@ -9,11 +9,12 @@ import { LoadingComponent } from '../shared/loading/loading.component';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { ButtonComponent } from '../shared/button/button.component';
 import { ModalComponent } from '../shared/modal/modal.component';
+import { ConfirmComponent } from '../shared/confirm/confirm.component';
 
 @Component({
   selector: 'app-destinations-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LoadingComponent, AlertComponent, ButtonComponent, ModalComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LoadingComponent, AlertComponent, ButtonComponent, ModalComponent, ConfirmComponent],
   templateUrl: './destinations-page.component.html',
   styleUrls: ['./destinations-page.component.css']
 })
@@ -50,6 +51,10 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
   isEditing = signal<boolean>(false);
   formModel: { id?: number; name: string; description: string; countryCode: string; type: number } =
     { name: '', description: '', countryCode: '', type: 0 };
+
+  // Estado confirmación
+  isConfirmOpen = signal<boolean>(false);
+  confirmData = signal<{ title: string; message: string; onConfirm: () => void } | null>(null);
 
   // Búsqueda con debounce
   private searchChange$ = new Subject<string>();
@@ -311,8 +316,18 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
       return;
     }
     
-    if (!confirm(`¿Eliminar destino ${id}?`)) return;
+    const destination = this.destinations().find(d => d.id === id);
+    const name = destination?.name || `ID ${id}`;
     
+    this.confirmData.set({
+      title: 'Eliminar destino',
+      message: `¿Estás seguro de que quieres eliminar "${name}"? Esta acción no se puede deshacer.`,
+      onConfirm: () => this.executeDelete(id)
+    });
+    this.isConfirmOpen.set(true);
+  }
+
+  private executeDelete(id: number): void {
     this.loading.set(true);
     this.apiService.destinationsDELETE(id).subscribe({
       next: () => {
@@ -325,6 +340,19 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
         this.showAlert('error', 'Error al eliminar el destino: ' + error.message);
       }
     });
+  }
+
+  onConfirmClose(): void {
+    this.isConfirmOpen.set(false);
+    this.confirmData.set(null);
+  }
+
+  onConfirmAction(): void {
+    const data = this.confirmData();
+    if (data?.onConfirm) {
+      data.onConfirm();
+    }
+    this.onConfirmClose();
   }
 
   getTypeLabel(type: string | number): string {

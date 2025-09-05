@@ -112,3 +112,14 @@
   </form>
 </app-modal>
 
+<app-confirm 
+  [show]="isConfirmOpen()" 
+  [title]="confirmData()?.title || ''"
+  [message]="confirmData()?.message || ''"
+  variant="danger"
+  confirmText="Eliminar"
+  cancelText="Cancelar"
+  (confirmed)="onConfirmAction()"
+  (cancelled)="onConfirmClose()">
+</app-confirm>
+
