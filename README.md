@@ -126,7 +126,7 @@ dotnet run
 ### Acceso a la Aplicación
 
 - **API REST v1.0**: `http://localhost:5259/api/v1.0/destinations`
-- **Swagger UI**: `https://localhost:7170/swagger` (solo en desarrollo)
+- **Swagger UI**: `http://localhost:5259/swagger` (solo en desarrollo)
 - **Frontend**: `http://localhost:4200`
 
 ## Testing
@@ -159,28 +159,79 @@ npm start
 
 El frontend usa un interceptor que apunta al backend en `http://localhost:5259/api/v1.0`. No requiere variables de entorno.
 
-### Rutas y navegación
+### Arquitectura del Frontend
 
-- Ruta por defecto: `/destinations`
-- Navegación principal en `app.html` (Inicio/Destinos)
+```
+frontend/
+├── src/app/
+│   ├── destinations/                    # Módulo principal de destinos
+│   │   ├── destinations-page.component.*    # Lista principal con CRUD
+│   │   └── destination-detail-page.component.*  # Vista detalle
+│   ├── shared/                         # Componentes reutilizables
+│   │   ├── alert/                      # Componente de alertas
+│   │   ├── button/                     # Botón personalizado
+│   │   ├── loading/                    # Indicador de carga
+│   │   ├── modal/                      # Modal reutilizable
+│   │   └── confirm/                    # Modal de confirmación
+│   ├── services/
+│   │   └── api-client.ts               # Cliente API generado con NSwag
+│   └── interceptors/
+│       └── error.interceptor.ts        # Manejo global de errores
+```
 
-### Módulo Destinations (implementado)
+### Funcionalidades Implementadas
 
-- Lista paginada con filtros por texto, país (`countryCode`) y tipo
-- Tabla con columnas: ID, Name, Description, CountryCode, Type, Last Modif
-- Mapeo de `Type` a etiqueta legible usando `/api/v1.0/destinations/types`
-- Selección de fila y acciones básicas: Create (esqueleto), Modify (esqueleto), Remove (operativo con confirmación)
+#### **Gestión de Destinos**
+- ✅ **Lista paginada** con filtros por texto, país y tipo
+- ✅ **Búsqueda con debounce** (700ms) para optimizar rendimiento
+- ✅ **Ordenación por columnas** (asc/desc) en cliente
+- ✅ **Selector de tamaño de página** (5/10/20/50/100 elementos)
+- ✅ **Vista detalle** (`/destinations/:id`) con información completa
 
-Próximas mejoras sugeridas: formularios de crear/editar con validación reactiva, ordenación por columnas y virtual scroll para datasets muy grandes.
+#### **Operaciones CRUD**
+- ✅ **Crear destinos** con modal y formulario validado
+- ✅ **Editar destinos** con datos preseleccionados
+- ✅ **Eliminar destinos** con modal de confirmación personalizado
+- ✅ **Validación de formularios** con mensajes de error específicos
 
-## Próximos Pasos
+#### **Componentes Reutilizables**
+- ✅ **app-alert** - Sistema de notificaciones (success/error/warning)
+- ✅ **app-button** - Botón con variantes (primary/secondary/danger)
+- ✅ **app-loading** - Indicador de carga global
+- ✅ **app-modal** - Modal reutilizable con backdrop
+- ✅ **app-confirm** - Modal de confirmación para acciones destructivas
 
-### Desarrollo del Frontend
-1. **Crear proyecto Angular** con estructura modular
-2. **Implementar componentes** para gestión de destinos
-3. **Integrar con la API** del backend
-4. **Implementar interfaz** basada en el wireframe
-5. **Testing y optimización** de la interfaz
+#### **UX/UI Mejorada**
+- ✅ **Diseño responsive** con breakpoints móviles
+- ✅ **Estados de carga** con skeletons y spinners
+- ✅ **Manejo de errores** con mensajes descriptivos
+- ✅ **Navegación fluida** entre lista y detalle
+- ✅ **Feedback visual** para todas las acciones
+
+### Rutas Disponibles
+
+- **`/`** → Redirige a `/destinations`
+- **`/destinations`** → Lista principal de destinos
+- **`/destinations/:id`** → Vista detalle de destino específico
+
+### Características Técnicas
+
+#### **Arquitectura**
+- **Standalone Components** - Componentes independientes sin NgModules
+- **Signals** - Estado reactivo con Angular Signals
+- **Template-driven Forms** - Formularios con ngModel
+- **RxJS** - Programación reactiva para HTTP y debounce
+
+#### **Integración con Backend**
+- **NSwag** - Cliente API generado automáticamente
+- **Interceptors** - Manejo global de errores y URLs
+- **Type Safety** - DTOs tipados para todas las operaciones
+
+#### **Performance**
+- **Lazy Loading** - Carga bajo demanda de componentes
+- **Debounce** - Optimización de búsquedas
+- **Paginación** - Manejo eficiente de grandes datasets
+- **OnPush** - Estrategia de detección de cambios optimizada
 
 ### Características Implementadas
 

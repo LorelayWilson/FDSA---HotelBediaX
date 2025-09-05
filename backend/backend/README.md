@@ -16,8 +16,8 @@ dotnet run
 ```
 
 ### Acceso
-- **API**: `https://localhost:7170/api/v1/destinations`
-- **Swagger**: `https://localhost:7170/swagger`
+- **API**: `http://localhost:5259/api/v1/destinations`
+- **Swagger**: `http://localhost:5259/swagger`
 
 ## Arquitectura Hexagonal
 
@@ -242,8 +242,8 @@ Para información detallada sobre testing, cobertura y ejecución de tests, cons
 
 ## Troubleshooting
 
-### Error: "Unable to bind to https://localhost:7170"
-- Verificar que el puerto 7170 no esté en uso
+### Error: "Unable to bind to https://localhost:5259"
+- Verificar que el puerto 5259 no esté en uso
 - Cambiar el puerto en `launchSettings.json` si es necesario
 
 ### Error: "Database context disposed"
@@ -254,14 +254,13 @@ Para información detallada sobre testing, cobertura y ejecución de tests, cons
 - Verificar que todos los mapeos estén definidos en `AutoMapperProfile`
 - Ejecutar `config.AssertConfigurationIsValid()` en desarrollo
 
-## Author
+## Autor
 
 **Lorelay Pricop Florescu**  
-Graduate in Interactive Technologies and Project Manager with experience in .NET, Python, Angular, Azure DevOps, AI, and Agile methodologies.
+Graduada en Tecnologías Interactivas y Project Manager con experiencia en .NET, Python, Angular, Azure DevOps, IA y metodologías ágiles.
 
 🔗 [LinkedIn](https://www.linkedin.com/in/lorelaypricop)  
-📧 Contact: lorelaypricop@gmail.com
+📧 Contacto: lorelaypricop@gmail.com
 
----
-
-> Some ideas regarding validation, style, and structure were reviewed with the support of artificial intelligence (AI) tools, used to help accelerate documentation and validate edge cases.
+# Notas
+> Algunas ideas relacionadas con validación, estilo y estructura se revisaron con el apoyo de herramientas de inteligencia artificial (IA), utilizadas para acelerar la documentación y validar casos límite.

@@ -111,3 +111,14 @@ src/app/
 7. **Documentar** la funcionalidad
 
 Esta estructura asegura que el proyecto sea mantenible, escalable y siga las mejores prácticas de Angular.
+
+## Autor
+
+**Lorelay Pricop Florescu**  
+Graduada en Tecnologías Interactivas y Project Manager con experiencia en .NET, Python, Angular, Azure DevOps, IA y metodologías ágiles.
+
+🔗 [LinkedIn](https://www.linkedin.com/in/lorelaypricop)  
+📧 Contacto: lorelaypricop@gmail.com
+
+# Notas
+> Algunas ideas relacionadas con validación, estilo y estructura se revisaron con el apoyo de herramientas de inteligencia artificial (IA), utilizadas para acelerar la documentación y validar casos límite.
