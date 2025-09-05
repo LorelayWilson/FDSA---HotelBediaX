@@ -61,6 +61,31 @@ th {
   font-weight: bold;
 }
 
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sort-indicator {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  margin-left: 6px;
+  opacity: 0.4;
+}
+
+.sort-indicator.active[data-dir="asc"] {
+  border-bottom: 6px solid #666;
+  opacity: 1;
+}
+
+.sort-indicator.active[data-dir="desc"] {
+  border-top: 6px solid #666;
+  opacity: 1;
+}
+
 tr:hover {
   background-color: #f9f9f9;
 }

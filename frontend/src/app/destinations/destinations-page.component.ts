@@ -19,11 +19,12 @@ export class DestinationsPageComponent implements OnInit {
   private readonly apiService = inject(ApiClient);
 
   // Estado de filtros y datos
-  filter = signal<{ page?: number; pageSize?: number; search?: string; countryCode?: string; type?: string }>({ page: 1, pageSize: 20 });
+  filter = signal<{ page?: number; pageSize?: number; search?: string; countryCode?: string; type?: string }>({ page: 1, pageSize: 5 });
   destinations = signal<DestinationDto[]>([]);
   totalCount = signal<number>(0);
   loading = signal<boolean>(false);
   selectedId = signal<number | null>(null);
+  sortState = signal<{ key: 'id' | 'name' | 'description' | 'countryCode' | 'type' | 'lastModif'; dir: 'asc' | 'desc' } | null>(null);
   
   // Estados de alertas
   alert = signal<{ show: boolean; type: string; message: string }>({
@@ -36,7 +37,7 @@ export class DestinationsPageComponent implements OnInit {
   searchTerm = '';
   countryCode = '';
   type: string = '';
-  pageSize = 20;
+  pageSize = 5;
 
   // Opciones para selects
   destinationTypes = signal<string[]>([]);
@@ -125,12 +126,53 @@ export class DestinationsPageComponent implements OnInit {
 
   canGoToNextPage(): boolean {
     const currentPage = this.filter().page || 1;
-    const totalPages = Math.ceil(this.totalCount() / (this.filter().pageSize || 20));
+    const totalPages = Math.ceil(this.totalCount() / (this.filter().pageSize || 5));
     return currentPage < totalPages;
   }
 
   selectRow(id: number): void {
     this.selectedId.set(id === this.selectedId() ? null : id);
+  }
+
+  onSort(key: 'id' | 'name' | 'description' | 'countryCode' | 'type' | 'lastModif'): void {
+    const current = this.sortState();
+    if (current?.key === key) {
+      const nextDir = current.dir === 'asc' ? 'desc' : 'asc';
+      this.sortState.set({ key, dir: nextDir });
+    } else {
+      this.sortState.set({ key, dir: 'asc' });
+    }
+  }
+
+  getSortedDestinations(): DestinationDto[] {
+    const data = [...(this.destinations() || [])];
+    const sort = this.sortState();
+    if (!sort) return data;
+
+    const compare = (a: any, b: any): number => {
+      const av = a ?? '';
+      const bv = b ?? '';
+      if (typeof av === 'number' && typeof bv === 'number') return av - bv;
+      const as = av instanceof Date ? av.getTime() : String(av).toLowerCase();
+      const bs = bv instanceof Date ? bv.getTime() : String(bv).toLowerCase();
+      if (as < bs) return -1;
+      if (as > bs) return 1;
+      return 0;
+    };
+
+    data.sort((a, b) => {
+      let res = 0;
+      switch (sort.key) {
+        case 'id': res = compare(a.id, b.id); break;
+        case 'name': res = compare(a.name, b.name); break;
+        case 'description': res = compare(a.description, b.description); break;
+        case 'countryCode': res = compare(a.countryCode, b.countryCode); break;
+        case 'type': res = compare(a.type, b.type); break;
+        case 'lastModif': res = compare(a.lastModif, b.lastModif); break;
+      }
+      return sort.dir === 'asc' ? res : -res;
+    });
+    return data;
   }
 
   onCreate(): void {

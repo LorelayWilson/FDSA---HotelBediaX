@@ -41,16 +41,16 @@
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>País</th>
-          <th>Tipo</th>
-          <th>Modificado</th>
+          <th (click)="onSort('id')" [class.sortable]="true">ID <span class="sort-indicator" [class.active]="sortState()?.key === 'id'" [attr.data-dir]="sortState()?.dir"></span></th>
+          <th (click)="onSort('name')" [class.sortable]="true">Nombre <span class="sort-indicator" [class.active]="sortState()?.key === 'name'" [attr.data-dir]="sortState()?.dir"></span></th>
+          <th (click)="onSort('description')" [class.sortable]="true">Descripción <span class="sort-indicator" [class.active]="sortState()?.key === 'description'" [attr.data-dir]="sortState()?.dir"></span></th>
+          <th (click)="onSort('countryCode')" [class.sortable]="true">País <span class="sort-indicator" [class.active]="sortState()?.key === 'countryCode'" [attr.data-dir]="sortState()?.dir"></span></th>
+          <th (click)="onSort('type')" [class.sortable]="true">Tipo <span class="sort-indicator" [class.active]="sortState()?.key === 'type'" [attr.data-dir]="sortState()?.dir"></span></th>
+          <th (click)="onSort('lastModif')" [class.sortable]="true">Modificado <span class="sort-indicator" [class.active]="sortState()?.key === 'lastModif'" [attr.data-dir]="sortState()?.dir"></span></th>
         </tr>
       </thead>
       <tbody>
-        @for (destination of destinations(); track destination.id) {
+        @for (destination of getSortedDestinations(); track destination.id) {
           <tr (click)="selectRow(destination.id!)" [class.selected]="selectedId() === destination.id">
             <td>{{ destination.id }}</td>
             <td>{{ destination.name }}</td>
