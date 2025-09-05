@@ -24,7 +24,7 @@ namespace backend.Infrastructure.Repositories
             // Aplicar filtro de búsqueda por texto (case-insensitive)
             if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
             {
-                var searchTerm = filter.SearchTerm.ToLower();
+                var searchTerm = filter.SearchTerm.ToLower().Trim();
                 query = query.Where(d => 
                     d.Name.ToLower().Contains(searchTerm) || 
                     d.Description.ToLower().Contains(searchTerm) ||
@@ -81,7 +81,8 @@ namespace backend.Infrastructure.Repositories
 
         public async Task<List<Destination>> SearchDestinationsAsync(string searchTerm)
         {
-            var lowerSearchTerm = searchTerm.ToLower();
+            var lowerSearchTerm = searchTerm.ToLower().Trim();
+            
             return await _dbSet
                 .Where(d => 
                     d.Name.ToLower().Contains(lowerSearchTerm) || 
