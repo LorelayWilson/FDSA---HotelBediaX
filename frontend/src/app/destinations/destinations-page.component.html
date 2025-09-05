@@ -71,4 +71,43 @@
   </section>
 </div>
 
+<app-modal [show]="isModalOpen()" [title]="isEditing() ? 'Editar destino' : 'Crear destino'" (closed)="onModalClose()">
+  <form (ngSubmit)="onSubmitForm()" #destForm="ngForm">
+    <div class="form-grid">
+      <label>
+        Nombre
+        <input name="name" [(ngModel)]="formModel.name" required />
+      </label>
+
+      <label>
+        Descripción
+        <textarea name="description" [(ngModel)]="formModel.description" rows="3" required></textarea>
+      </label>
+
+      <label>
+        País
+        <select name="countryCode" [(ngModel)]="formModel.countryCode" required>
+          <option value="" disabled>Selecciona un país</option>
+          @for (country of countries(); track country) {
+            <option [value]="country">{{ country }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Tipo
+        <select name="type" [(ngModel)]="formModel.type" required>
+          @for (destType of destinationTypes(); track destType; let i = $index) {
+            <option [ngValue]="i">{{ getTypeLabel(i) }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div modal-actions>
+      <app-button variant="secondary" (clicked)="onModalClose()" type="button">Cancelar</app-button>
+      <app-button variant="primary" type="submit">Guardar</app-button>
+    </div>
+  </form>
+</app-modal>
 

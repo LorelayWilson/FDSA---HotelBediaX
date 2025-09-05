@@ -6,11 +6,12 @@ import { DestinationDto, CreateDestinationDto, UpdateDestinationDto, Destination
 import { LoadingComponent } from '../shared/loading/loading.component';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { ButtonComponent } from '../shared/button/button.component';
+import { ModalComponent } from '../shared/modal/modal.component';
 
 @Component({
   selector: 'app-destinations-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LoadingComponent, AlertComponent, ButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LoadingComponent, AlertComponent, ButtonComponent, ModalComponent],
   templateUrl: './destinations-page.component.html',
   styleUrls: ['./destinations-page.component.css']
 })
@@ -40,6 +41,12 @@ export class DestinationsPageComponent implements OnInit {
   // Opciones para selects
   destinationTypes = signal<string[]>([]);
   countries = signal<string[]>([]);
+
+  // Estado modal y formulario
+  isModalOpen = signal<boolean>(false);
+  isEditing = signal<boolean>(false);
+  formModel: { id?: number; name: string; description: string; countryCode: string; type: number } =
+    { name: '', description: '', countryCode: '', type: 0 };
 
   ngOnInit(): void {
     this.loadCountries();
@@ -127,22 +134,14 @@ export class DestinationsPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    const newDestination = new CreateDestinationDto();
-    newDestination.name = 'Nuevo Destino';
-    newDestination.description = 'Descripción del nuevo destino';
-    newDestination.countryCode = this.countries()[0] || 'MEX';
-    newDestination.type = (this.destinationTypes()[0] as unknown as DestinationType) || DestinationType._0;
-
-    this.apiService.destinationsPOST(newDestination).subscribe({
-      next: (destination: DestinationDto) => {
-        this.showAlert('success', `Destino "${destination.name}" creado exitosamente`);
-        this.loadDestinations();
-      },
-      error: (error: any) => {
-        console.error('Error al crear destino:', error);
-        this.showAlert('error', 'Error al crear el destino');
-      }
-    });
+    this.isEditing.set(false);
+    this.formModel = {
+      name: '',
+      description: '',
+      countryCode: this.countries()[0] || '',
+      type: 0
+    };
+    this.isModalOpen.set(true);
   }
 
   onEdit(): void {
@@ -150,21 +149,91 @@ export class DestinationsPageComponent implements OnInit {
       this.showAlert('warning', 'Selecciona un destino para editar');
       return;
     }
+    this.isEditing.set(true);
+    const current = this.destinations().find(d => d.id === this.selectedId());
+    if (!current) {
+      this.showAlert('error', 'No se encontró el destino seleccionado');
+      return;
+    }
+    this.formModel = {
+      id: current.id!,
+      name: current.name || '',
+      description: current.description || '',
+      countryCode: current.countryCode || '',
+      type: (current.type as unknown as number) ?? 0
+    };
+    this.isModalOpen.set(true);
+  }
 
-    const updateData = new UpdateDestinationDto();
-    updateData.name = 'Destino Editado';
-    updateData.description = 'Descripción actualizada';
+  onModalClose(): void {
+    this.isModalOpen.set(false);
+  }
 
-    this.apiService.destinationsPUT(this.selectedId()!, updateData).subscribe({
-      next: (updatedDestination: DestinationDto) => {
-        this.showAlert('success', `Destino "${updatedDestination.name}" actualizado exitosamente`);
-        this.loadDestinations();
-      },
-      error: (error: any) => {
-        console.error('Error al actualizar destino:', error);
-        this.showAlert('error', 'Error al actualizar el destino');
+  onSubmitForm(): void {
+    const model = this.formModel;
+    if (!model.name?.trim() || !model.description?.trim() || !model.countryCode) {
+      this.showAlert('warning', 'Completa los campos obligatorios');
+      return;
+    }
+    this.loading.set(true);
+    if (this.isEditing()) {
+      const dto = new UpdateDestinationDto();
+      dto.name = model.name.trim();
+      dto.description = model.description.trim();
+      dto.countryCode = model.countryCode;
+      dto.type = model.type as DestinationType;
+      this.apiService.destinationsPUT(model.id!, dto).subscribe({
+        next: (updated: DestinationDto) => {
+          this.loading.set(false);
+          this.isModalOpen.set(false);
+          this.showAlert('success', `Destino "${updated.name}" actualizado exitosamente`);
+          this.loadDestinations();
+        },
+        error: (error: any) => {
+          this.loading.set(false);
+          this.showAlert('error', 'Error al actualizar el destino: ' + this.extractApiErrorDetails(error));
+        }
+      });
+    } else {
+      const dto = new CreateDestinationDto();
+      dto.name = model.name.trim();
+      dto.description = model.description.trim();
+      dto.countryCode = model.countryCode;
+      dto.type = model.type as DestinationType;
+      this.apiService.destinationsPOST(dto).subscribe({
+        next: (created: DestinationDto) => {
+          this.loading.set(false);
+          this.isModalOpen.set(false);
+          this.showAlert('success', `Destino "${created.name}" creado exitosamente`);
+          this.loadDestinations();
+        },
+        error: (error: any) => {
+          this.loading.set(false);
+          this.showAlert('error', 'Error al crear el destino: ' + this.extractApiErrorDetails(error));
+        }
+      });
+    }
+  }
+
+  private extractApiErrorDetails(error: any): string {
+    try {
+      const result = error?.result ?? null;
+      if (result?.errors) {
+        const parts: string[] = [];
+        for (const key of Object.keys(result.errors)) {
+          const msgs = result.errors[key];
+          if (Array.isArray(msgs)) {
+            for (const m of msgs) parts.push(`${key}: ${m}`);
+          }
+        }
+        if (parts.length) return parts.join(' | ');
       }
-    });
+      if (result?.title) return result.title;
+      if (result?.detail) return result.detail;
+      return error?.message ?? 'Error desconocido';
+    } catch {
+      return error?.message ?? 'Error desconocido';
+    }
   }
 
   onRemove(): void {
@@ -190,17 +259,24 @@ export class DestinationsPageComponent implements OnInit {
     });
   }
 
-  getTypeLabel(type: string): string {
-    // Mapeo automático basado en el enum del backend
-    const typeLabels: Record<string, string> = {
-      [DestinationType._0]: 'Playa',
-      [DestinationType._1]: 'Montaña', 
-      [DestinationType._2]: 'Ciudad',
-      [DestinationType._3]: 'Cultural',
-      [DestinationType._4]: 'Aventura',
-      [DestinationType._5]: 'Relajación'
+  getTypeLabel(type: string | number): string {
+    const names = this.destinationTypes(); // e.g., ["Beach","Mountain",...]
+    const toName = (t: string | number): string => {
+      if (typeof t === 'number') {
+        return names[t] ?? String(t);
+      }
+      return t;
     };
-    return typeLabels[type] || type;
+    const name = toName(type);
+    const map: Record<string, string> = {
+      Beach: 'Playa',
+      Mountain: 'Montaña',
+      City: 'Ciudad',
+      Cultural: 'Cultural',
+      Adventure: 'Aventura',
+      Relax: 'Relajación'
+    };
+    return map[name] || name;
   }
 
   showAlert(type: string, message: string): void {
