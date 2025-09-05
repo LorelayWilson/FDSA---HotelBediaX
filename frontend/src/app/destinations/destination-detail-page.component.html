@@ -1,0 +1,61 @@
+<div class="detail-container">
+  <app-alert 
+    [show]="alert().show" 
+    [type]="alert().type" 
+    [message]="alert().message"
+    (dismissed)="onAlertDismissed()">
+  </app-alert>
+
+  <div class="detail-header">
+    <app-button variant="secondary" (clicked)="onBack()">← Volver</app-button>
+    <h1>Detalle del Destino</h1>
+    <app-button variant="primary" (clicked)="onEdit()">Editar</app-button>
+  </div>
+
+  <app-loading [isLoading]="loading()"></app-loading>
+
+  @if (destination(); as dest) {
+    <div class="detail-content">
+      <div class="detail-card">
+        <div class="detail-section">
+          <h2>{{ dest.name }}</h2>
+          <div class="detail-meta">
+            <span class="detail-badge">{{ dest.countryCode }}</span>
+            <span class="detail-badge">{{ getTypeLabel(dest.type || '') }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Descripción</h3>
+          <p class="detail-description">{{ dest.description }}</p>
+        </div>
+
+        <div class="detail-section">
+          <h3>Información</h3>
+          <div class="detail-info">
+            <div class="info-row">
+              <span class="info-label">ID:</span>
+              <span class="info-value">{{ dest.id }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">País:</span>
+              <span class="info-value">{{ dest.countryCode }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Tipo:</span>
+              <span class="info-value">{{ getTypeLabel(dest.type || '') }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Última modificación:</span>
+              <span class="info-value">{{ dest.lastModif | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else if (!loading()) {
+    <div class="detail-empty">
+      <p>No se encontró el destino solicitado.</p>
+    </div>
+  }
+</div>

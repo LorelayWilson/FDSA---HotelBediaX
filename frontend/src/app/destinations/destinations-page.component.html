@@ -54,7 +54,7 @@
         @for (destination of getSortedDestinations(); track destination.id) {
           <tr (click)="selectRow(destination.id!)" [class.selected]="selectedId() === destination.id">
             <td>{{ destination.id }}</td>
-            <td>{{ destination.name }}</td>
+            <td><a [routerLink]="['/destinations', destination.id]" (click)="$event.stopPropagation()" class="destination-link">{{ destination.name }}</a></td>
             <td>{{ destination.description }}</td>
             <td>{{ destination.countryCode }}</td>
             <td>{{ getTypeLabel(destination.type?.toString() || '') }}</td>
