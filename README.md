@@ -156,14 +156,6 @@ cd backend/backend.Tests
 dotnet test
 ```
 
-### Cobertura de Testing
-
-- **81 pruebas** implementadas (cobertura completa)
-- **81 pruebas exitosas** (100% de éxito)
-- **0 pruebas con errores** (todos los errores corregidos)
-- **Tests organizados por capas** de arquitectura hexagonal
-- **Cobertura completa** de todos los componentes
-
 ## Características Técnicas Implementadas
 
 ### **Arquitectura Hexagonal (Ports and Adapters)**
