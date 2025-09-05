@@ -52,15 +52,7 @@ export class DestinationDetailPageComponent implements OnInit {
   }
 
   getTypeLabel(type: string | number): string {
-    const map: Record<string, string> = {
-      Beach: 'Playa',
-      Mountain: 'Montaña',
-      City: 'Ciudad',
-      Cultural: 'Cultural',
-      Adventure: 'Aventura',
-      Relax: 'Relajación'
-    };
-    return map[String(type)] || String(type);
+    return String(type);
   }
 
   onBack(): void {

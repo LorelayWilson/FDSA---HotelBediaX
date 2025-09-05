@@ -368,23 +368,7 @@ export class DestinationsPageComponent implements OnInit, OnDestroy {
   }
 
   getTypeLabel(type: string | number): string {
-    const names = this.destinationTypes(); // e.g., ["Beach","Mountain",...]
-    const toName = (t: string | number): string => {
-      if (typeof t === 'number') {
-        return names[t] ?? String(t);
-      }
-      return t;
-    };
-    const name = toName(type);
-    const map: Record<string, string> = {
-      Beach: 'Playa',
-      Mountain: 'Montaña',
-      City: 'Ciudad',
-      Cultural: 'Cultural',
-      Adventure: 'Aventura',
-      Relax: 'Relajación'
-    };
-    return map[name] || name;
+    return String(type);
   }
 
   showAlert(type: string, message: string): void {
