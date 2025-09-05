@@ -1,116 +1,143 @@
-# Estructura del Frontend - HotelBediaX
+# Frontend - HotelBediaX
 
 ## Arquitectura Modular Escalable
 
-Este frontend está organizado siguiendo las mejores prácticas de Angular con una arquitectura modular que facilita el mantenimiento y la escalabilidad.
+Este frontend está organizado siguiendo las mejores prácticas de Angular con una arquitectura modular que facilita el mantenimiento y la escalabilidad. Utiliza Angular 18 con componentes standalone y TypeScript para una experiencia de desarrollo moderna y eficiente.
+
+## Características Principales
+
+### **Gestión de Destinos Turísticos**
+- **CRUD Completo**: Crear, leer, actualizar y eliminar destinos
+- **Filtros Avanzados**: Búsqueda por nombre, país y tipo de destino
+- **Paginación**: Navegación eficiente por grandes conjuntos de datos
+- **Ordenamiento**: Ordenar por cualquier columna (ID, nombre, descripción, país, tipo, fecha)
+- **Tipos de Destino**: Beach, Mountain, City, Cultural, Adventure, Relax
+- **Validación**: Formularios con validación en tiempo real
+- **Responsive Design**: Adaptable a diferentes dispositivos
+
+### **Tecnologías Utilizadas**
+- **Angular 18**: Framework principal con componentes standalone
+- **TypeScript**: Tipado estático para mayor robustez
+- **RxJS**: Programación reactiva para manejo de datos
+- **Angular Signals**: Estado reactivo moderno
+- **NSwag**: Cliente API generado automáticamente
+- **CSS3**: Estilos modernos y responsivos
 
 ## Estructura de Carpetas
 
 ```
 src/app/
-├── core/                    # Servicios y funcionalidades core
-│   ├── services/           # Servicios base y específicos
-│   ├── guards/             # Guards de autenticación/autorización
-│   ├── interceptors/       # Interceptors HTTP
-│   └── models/             # Modelos de dominio
+├── destinations/           # Gestión de destinos turísticos
+│   ├── destinations-page.component.ts    # Lista principal con filtros y CRUD
+│   ├── destinations-page.component.html  # Template de la página principal
+│   ├── destinations-page.component.css   # Estilos de la página principal
+│   ├── destination-detail-page.component.ts    # Vista detallada de destino
+│   ├── destination-detail-page.component.html  # Template de detalle
+│   └── destination-detail-page.component.css   # Estilos de detalle
 ├── shared/                 # Componentes y utilidades reutilizables
-│   ├── components/         # Componentes compartidos
-├── features/               # Módulos de funcionalidades
-│   ├── destinations/       # Gestión de destinos turísticos
-├── layout/                # Componentes de layout
-│   ├── header/            # Cabecera de la aplicación
-│   └── main-layout/       # Layout principal
+│   ├── alert/             # Componente de alertas
+│   ├── button/            # Componente de botones
+│   ├── confirm/           # Componente de confirmación
+│   ├── loading/           # Componente de carga
+│   └── modal/             # Componente de modales
+├── services/              # Servicios de la aplicación
+│   └── api-client.ts      # Cliente API generado con NSwag
 └── app.*                  # Archivos principales de la app
 ```
 
-## Principios de Organización
+## Arquitectura de Componentes
 
-### **Core Module**
-- **Servicios base**: `BaseApiService` para operaciones CRUD genéricas
-- **Interceptors**: Configuración de API y manejo de errores
-- **Guards**: Autenticación y autorización
-- **Modelos de dominio**: Entidades específicas del negocio
+### **Componentes Standalone**
+- **Independientes**: Cada componente es autónomo y reutilizable
+- **TypeScript**: Tipado estático para mayor robustez
+- **Signals**: Estado reactivo moderno de Angular
+- **OnPush**: Estrategia de detección de cambios optimizada
 
-### **Shared Module**
-- **Componentes reutilizables**: Botones, modales, formularios genéricos
-- **Pipes**: Transformaciones de datos comunes
-- **Directives**: Comportamientos reutilizables
-- **Modelos compartidos**: Interfaces y tipos comunes
+### **Gestión de Estado**
+- **Angular Signals**: Estado reactivo para datos de la aplicación
+- **RxJS Observables**: Manejo asíncrono de datos de la API
+- **Local State**: Estado local en cada componente
+- **Event-Driven**: Comunicación entre componentes mediante eventos
 
-### **Features Module**
-- **Módulos independientes**: Cada feature es autónoma
-- **Lazy loading**: Carga bajo demanda para optimizar rendimiento
-- **Componentes específicos**: Solo para esa funcionalidad
-- **Servicios específicos**: Lógica de negocio de la feature
+### **Servicios y API**
+- **ApiClient**: Cliente generado automáticamente con NSwag
+- **TypeScript Interfaces**: Tipos seguros para DTOs
+- **Error Handling**: Manejo centralizado de errores
+- **Loading States**: Estados de carga para mejor UX
 
-### **Layout Module**
-- **Componentes de estructura**: Header, sidebar, footer
-- **Navegación**: Menús y enlaces
-- **Responsive design**: Adaptación a diferentes pantallas
+### **Componentes Compartidos**
+- **AlertComponent**: Notificaciones y mensajes al usuario
+- **ButtonComponent**: Botones reutilizables con variantes
+- **ModalComponent**: Modales para formularios y confirmaciones
+- **LoadingComponent**: Indicadores de carga
+- **ConfirmComponent**: Diálogos de confirmación
 
-## Beneficios de esta Estructura
+## Comandos de Desarrollo
 
-### **Escalabilidad**
-- Fácil agregar nuevas features sin afectar existentes
-- Separación clara de responsabilidades
-- Código organizado y mantenible
+### **Instalación**
+```bash
+npm install
+```
 
-### **Reutilización**
-- Componentes y servicios compartidos
-- Patrones consistentes en toda la aplicación
-- Reducción de duplicación de código
+### **Desarrollo**
+```bash
+npm start
+# o
+ng serve
+```
 
-### **Testing**
-- Tests organizados por módulos
-- Mocks y utilidades compartidas
-- Cobertura de código estructurada
+### **Generar Cliente API**
+```bash
+npm run generate-api
+```
 
-### **Performance**
-- Lazy loading de features
-- Tree shaking optimizado
-- Carga bajo demanda
+### **Build de Producción**
+```bash
+npm run build
+```
 
-## Convenciones de Naming
+### **Tests**
+```bash
+npm test
+# o
+ng test
+```
 
-### **Carpetas**
-- **kebab-case**: `destinations-page`, `main-layout`
-- **Descriptivo**: Nombres que explican el propósito
+## Configuración Técnica
+
+### **NSwag Configuration**
+- **Archivo**: `nswag.json`
+- **Endpoint**: `http://localhost:5259/swagger/v1/swagger.json`
+- **Output**: `src/app/services/api-client.ts`
+- **Template**: Angular con HttpClient
+
+### **TypeScript Configuration**
+- **Target**: ES2022
+- **Strict Mode**: Habilitado
+- **Angular**: 18.x
+- **Node**: 18.x o superior
+
+### **Angular Features**
+- **Standalone Components**: Habilitado
+- **Signals**: Habilitado
+- **Control Flow**: Habilitado (Angular 17+)
+- **OnPush Strategy**: Habilitado
+
+## Convenciones de Código
 
 ### **Archivos**
 - **Componentes**: `component-name.component.ts`
 - **Servicios**: `service-name.service.ts`
-- **Modelos**: `model-name.model.ts`
-- **Tests**: `component-name.component.spec.ts`
+- **Templates**: `component-name.component.html`
+- **Estilos**: `component-name.component.css`
 
-### **Clases y Interfaces**
-- **PascalCase**: `DestinationsPageComponent`
-- **Descriptivo**: Nombres claros y específicos
+### **Naming**
+- **Carpetas**: kebab-case (`destinations-page`)
+- **Clases**: PascalCase (`DestinationsPageComponent`)
+- **Variables**: camelCase (`selectedDestination`)
+- **Constantes**: UPPER_SNAKE_CASE (`API_BASE_URL`)
 
-## Futuras Mejoras
-
-### **Próximos Módulos**
-- **Hotels**: Gestión de hoteles y alojamientos
-- **Bookings**: Sistema de reservas
-- **Users**: Gestión de usuarios y perfiles
-- **Reports**: Reportes y estadísticas
-
-### **Mejoras Técnicas**
-- **State Management**: NgRx para estado global
-- **PWA**: Progressive Web App capabilities
-- **Testing**: E2E con Cypress
-- **CI/CD**: Pipeline de despliegue automatizado
-
-## Cómo Agregar una Nueva Feature
-
-1. **Crear carpeta** en `features/nueva-feature/`
-2. **Implementar componentes** standalone
-3. **Crear servicios** específicos
-4. **Definir modelos** en `core/models/`
-5. **Agregar rutas** con lazy loading
-6. **Implementar tests** unitarios
-7. **Documentar** la funcionalidad
-
-Esta estructura asegura que el proyecto sea mantenible, escalable y siga las mejores prácticas de Angular.
+Esta estructura asegura que el proyecto sea mantenible, escalable y siga las mejores prácticas de Angular moderno.
 
 ## Autor
 
@@ -120,5 +147,5 @@ Graduada en Tecnologías Interactivas y Project Manager con experiencia en .NET,
 🔗 [LinkedIn](https://www.linkedin.com/in/lorelaypricop)  
 📧 Contacto: lorelaypricop@gmail.com
 
-# Notas
+## Notas
 > Algunas ideas relacionadas con validación, estilo y estructura se revisaron con el apoyo de herramientas de inteligencia artificial (IA), utilizadas para acelerar la documentación y validar casos límite.

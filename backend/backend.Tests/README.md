@@ -78,42 +78,42 @@ backend.Tests/
 ### 1. Tests Unitarios
 
 #### DestinationServiceTests
-- ✅ Obtener destinos con y sin filtros
-- ✅ Obtener destino por ID (válido e inválido)
-- ✅ Crear nuevo destino
-- ✅ Actualizar destino existente
-- ✅ Eliminar destino
-- ✅ Obtener lista de países
-- ✅ Paginación y ordenamiento
+- Obtener destinos con y sin filtros
+- Obtener destino por ID (válido e inválido)
+- Crear nuevo destino
+- Actualizar destino existente
+- Eliminar destino
+- Obtener lista de países
+- Paginación y ordenamiento
 
 #### DestinationsControllerTests
-- ✅ Todos los endpoints GET, POST, PUT, DELETE
-- ✅ Manejo de errores y excepciones
-- ✅ Validación de ModelState
-- ✅ Respuestas HTTP correctas (200, 201, 404, 500)
+- Todos los endpoints GET, POST, PUT, DELETE
+- Manejo de errores y excepciones
+- Validación de ModelState
+- Respuestas HTTP correctas (200, 201, 404, 500)
 
 #### DataSeedServiceTests
-- ✅ Poblar base de datos vacía
-- ✅ No duplicar datos existentes
-- ✅ Verificar destinos específicos
-- ✅ Validar fechas y IDs únicos
-- ✅ Cobertura de todos los tipos de destino
+- Poblar base de datos vacía
+- No duplicar datos existentes
+- Verificar destinos específicos
+- Validar fechas y IDs únicos
+- Cobertura de todos los tipos de destino
 
 #### AutoMapperProfileTests
-- ✅ Mapeo de entidades a DTOs
-- ✅ Mapeo de DTOs a entidades
-- ✅ Mapeo de listas
-- ✅ Mapeo con valores nulos y vacíos
-- ✅ Validación de configuración
+- Mapeo de entidades a DTOs
+- Mapeo de DTOs a entidades
+- Mapeo de listas
+- Mapeo con valores nulos y vacíos
+- Validación de configuración
 
 ### 2. Tests de Integración
 
 #### DestinationsControllerIntegrationTests
-- ✅ Flujo completo de la API
-- ✅ Base de datos real (en memoria)
-- ✅ Filtros y paginación
-- ✅ Validación de datos
-- ✅ Respuestas HTTP completas
+- Flujo completo de la API
+- Base de datos real (en memoria)
+- Filtros y paginación
+- Validación de datos
+- Respuestas HTTP completas
 
 ## Cómo Ejecutar los Tests
 
@@ -247,8 +247,8 @@ Al agregar nuevos tests:
 **Lorelay Pricop Florescu**  
 Graduate in Interactive Technologies and Project Manager with experience in .NET, Python, Angular, Azure DevOps, AI, and Agile methodologies.
 
-🔗 [LinkedIn](https://www.linkedin.com/in/lorelaypricop)  
-📧 Contact: lorelaypricop@gmail.com
+[LinkedIn](https://www.linkedin.com/in/lorelaypricop)  
+Contact: lorelaypricop@gmail.com
 
 # Notes
 > Some ideas regarding validation, style, and structure were reviewed with the support of artificial intelligence (AI) tools, used to help accelerate documentation and validate edge case

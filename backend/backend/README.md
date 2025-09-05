@@ -259,8 +259,8 @@ Para información detallada sobre testing, cobertura y ejecución de tests, cons
 **Lorelay Pricop Florescu**  
 Graduada en Tecnologías Interactivas y Project Manager con experiencia en .NET, Python, Angular, Azure DevOps, IA y metodologías ágiles.
 
-🔗 [LinkedIn](https://www.linkedin.com/in/lorelaypricop)  
-📧 Contacto: lorelaypricop@gmail.com
+[LinkedIn](https://www.linkedin.com/in/lorelaypricop)  
+Contacto: lorelaypricop@gmail.com
 
 # Notas
 > Algunas ideas relacionadas con validación, estilo y estructura se revisaron con el apoyo de herramientas de inteligencia artificial (IA), utilizadas para acelerar la documentación y validar casos límite.
