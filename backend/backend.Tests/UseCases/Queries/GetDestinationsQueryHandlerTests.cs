@@ -5,7 +5,6 @@ using backend.Application.Queries;
 using backend.Application.DTOs;
 using backend.Domain.Entities;
 using backend.Domain.Interfaces;
-using backend.Domain.Interfaces;
 using backend.Tests.Helpers;
 
 namespace backend.Tests.Application.Queries
@@ -17,14 +16,12 @@ namespace backend.Tests.Application.Queries
     public class GetDestinationsQueryHandlerTests
     {
         private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-        private readonly Mock<IMapper> _mockMapper;
         private readonly GetDestinationsQueryHandler _handler;
 
         public GetDestinationsQueryHandlerTests()
         {
             _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _mockMapper = new Mock<IMapper>();
-            _handler = new GetDestinationsQueryHandler(_mockUnitOfWork.Object, _mockMapper.Object);
+            _handler = new GetDestinationsQueryHandler(_mockUnitOfWork.Object);
         }
 
         [Fact]
@@ -51,8 +48,6 @@ namespace backend.Tests.Application.Queries
 
             _mockUnitOfWork.Setup(u => u.Destinations.GetDestinationsWithFiltersAsync(It.IsAny<IFilterCriteria>()))
                           .ReturnsAsync(pagedResult);
-            _mockMapper.Setup(m => m.Map<List<DestinationDto>>(destinations))
-                      .Returns(destinationDtos);
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -81,8 +76,6 @@ namespace backend.Tests.Application.Queries
 
             _mockUnitOfWork.Setup(u => u.Destinations.GetDestinationsWithFiltersAsync(It.IsAny<IFilterCriteria>()))
                           .ReturnsAsync(emptyPagedResult);
-            _mockMapper.Setup(m => m.Map<List<DestinationDto>>(It.IsAny<List<Destination>>()))
-                      .Returns(new List<DestinationDto>());
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);

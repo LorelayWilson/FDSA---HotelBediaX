@@ -16,14 +16,12 @@ namespace backend.Tests.Application.Commands
     public class UpdateDestinationCommandHandlerTests
     {
         private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-        private readonly Mock<IMapper> _mockMapper;
         private readonly UpdateDestinationCommandHandler _handler;
 
         public UpdateDestinationCommandHandlerTests()
         {
             _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _mockMapper = new Mock<IMapper>();
-            _handler = new UpdateDestinationCommandHandler(_mockUnitOfWork.Object, _mockMapper.Object);
+            _handler = new UpdateDestinationCommandHandler(_mockUnitOfWork.Object);
         }
 
         [Fact]
@@ -37,8 +35,6 @@ namespace backend.Tests.Application.Commands
 
             _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(1))
                           .ReturnsAsync(existingDestination);
-            _mockMapper.Setup(m => m.Map<DestinationDto>(existingDestination))
-                      .Returns(expectedDto);
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
@@ -80,8 +76,6 @@ namespace backend.Tests.Application.Commands
 
             _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(1))
                           .ReturnsAsync(existingDestination);
-            _mockMapper.Setup(m => m.Map<DestinationDto>(It.IsAny<Destination>()))
-                      .Returns(expectedDto);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);

@@ -23,11 +23,11 @@ namespace backend.Infrastructure.Repositories
             // Aplicar filtro de búsqueda por texto (case-insensitive)
             if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
             {
-                var searchTerm = filter.SearchTerm.ToLower().Trim();
+                var searchTerm = filter.SearchTerm.Trim();
                 query = query.Where(d => 
-                    d.Name.ToLower().Contains(searchTerm) || 
-                    d.Description.ToLower().Contains(searchTerm) ||
-                    d.CountryCode.ToLower().Contains(searchTerm));
+                    d.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || 
+                    d.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    d.CountryCode.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
             }
 
             // Aplicar filtro por código de país específico
@@ -80,13 +80,13 @@ namespace backend.Infrastructure.Repositories
 
         public async Task<List<Destination>> SearchDestinationsAsync(string searchTerm)
         {
-            var lowerSearchTerm = searchTerm.ToLower().Trim();
+            var trimmedSearchTerm = searchTerm.Trim();
             
             return await _dbSet
                 .Where(d => 
-                    d.Name.ToLower().Contains(lowerSearchTerm) || 
-                    d.Description.ToLower().Contains(lowerSearchTerm) ||
-                    d.CountryCode.ToLower().Contains(lowerSearchTerm))
+                    d.Name.Contains(trimmedSearchTerm, StringComparison.OrdinalIgnoreCase) || 
+                    d.Description.Contains(trimmedSearchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    d.CountryCode.Contains(trimmedSearchTerm, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(d => d.Name)
                 .ToListAsync();
         }

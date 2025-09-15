@@ -16,14 +16,12 @@ namespace backend.Tests.Application.Queries
     public class GetDestinationByIdQueryHandlerTests
     {
         private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-        private readonly Mock<IMapper> _mockMapper;
         private readonly GetDestinationByIdQueryHandler _handler;
 
         public GetDestinationByIdQueryHandlerTests()
         {
             _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _mockMapper = new Mock<IMapper>();
-            _handler = new GetDestinationByIdQueryHandler(_mockUnitOfWork.Object, _mockMapper.Object);
+            _handler = new GetDestinationByIdQueryHandler(_mockUnitOfWork.Object);
         }
 
         [Fact]
@@ -36,8 +34,6 @@ namespace backend.Tests.Application.Queries
 
             _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(1))
                           .ReturnsAsync(destination);
-            _mockMapper.Setup(m => m.Map<DestinationDto>(destination))
-                      .Returns(expectedDto);
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -73,8 +69,6 @@ namespace backend.Tests.Application.Queries
 
             _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(1))
                           .ReturnsAsync(destination);
-            _mockMapper.Setup(m => m.Map<DestinationDto>(destination))
-                      .Returns(expectedDto);
 
             // Act
             await _handler.Handle(query, CancellationToken.None);
