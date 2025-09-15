@@ -5,7 +5,8 @@ using AutoMapper;
 using backend.Application.Queries;
 using backend.Application.DTOs;
 using backend.Domain.Entities;
-using backend.Infrastructure.UnitOfWork;
+using backend.Domain.Interfaces;
+using backend.Domain.Interfaces;
 using backend.Tests.Helpers;
 
 namespace backend.Tests.Application.Queries
@@ -41,7 +42,7 @@ namespace backend.Tests.Application.Queries
                 Type = d.Type 
             }).ToList();
 
-            var pagedResult = new PagedResultDto<Destination>
+            var pagedResult = new PagedResult<Destination>
             {
                 Items = destinations,
                 TotalCount = destinations.Count,
@@ -49,7 +50,7 @@ namespace backend.Tests.Application.Queries
                 PageSize = filter.PageSize
             };
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetDestinationsWithFiltersAsync(filter))
+            _mockUnitOfWork.Setup(u => u.Destinations.GetDestinationsWithFiltersAsync(It.IsAny<IFilterCriteria>()))
                           .ReturnsAsync(pagedResult);
             _mockMapper.Setup(m => m.Map<List<DestinationDto>>(destinations))
                       .Returns(destinationDtos);
@@ -71,7 +72,7 @@ namespace backend.Tests.Application.Queries
             // Arrange
             var filter = TestDataHelper.CreateTestDestinationFilter();
             var query = new GetDestinationsQuery { Filter = filter };
-            var emptyPagedResult = new PagedResultDto<Destination>
+            var emptyPagedResult = new PagedResult<Destination>
             {
                 Items = new List<Destination>(),
                 TotalCount = 0,
@@ -79,7 +80,7 @@ namespace backend.Tests.Application.Queries
                 PageSize = filter.PageSize
             };
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetDestinationsWithFiltersAsync(filter))
+            _mockUnitOfWork.Setup(u => u.Destinations.GetDestinationsWithFiltersAsync(It.IsAny<IFilterCriteria>()))
                           .ReturnsAsync(emptyPagedResult);
             _mockMapper.Setup(m => m.Map<List<DestinationDto>>(It.IsAny<List<Destination>>()))
                       .Returns(new List<DestinationDto>());

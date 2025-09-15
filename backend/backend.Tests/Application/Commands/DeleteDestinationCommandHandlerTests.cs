@@ -3,7 +3,7 @@ using FluentAssertions;
 using Moq;
 using backend.Application.Commands;
 using backend.Domain.Entities;
-using backend.Infrastructure.UnitOfWork;
+using backend.Domain.Interfaces;
 using backend.Tests.Helpers;
 
 namespace backend.Tests.Application.Commands

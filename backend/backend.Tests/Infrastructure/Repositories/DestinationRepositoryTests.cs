@@ -5,7 +5,7 @@ using backend.Infrastructure.Data;
 using backend.Infrastructure.Repositories;
 using backend.Domain.Entities;
 using backend.Domain.Enums;
-using backend.Application.DTOs;
+using backend.Domain.Interfaces;
 using backend.Tests.Helpers;
 
 namespace backend.Tests.Infrastructure.Repositories
@@ -37,7 +37,7 @@ namespace backend.Tests.Infrastructure.Repositories
             _context.Destinations.AddRange(destinations);
             await _context.SaveChangesAsync();
 
-            var filter = new DestinationFilterDto
+            var filter = new TestFilterCriteria
             {
                 Page = 1,
                 PageSize = 10
@@ -60,7 +60,7 @@ namespace backend.Tests.Infrastructure.Repositories
             _context.Destinations.AddRange(destinations);
             await _context.SaveChangesAsync();
 
-            var filter = new DestinationFilterDto
+            var filter = new TestFilterCriteria
             {
                 SearchTerm = "Cancún",
                 Page = 1,
@@ -83,7 +83,7 @@ namespace backend.Tests.Infrastructure.Repositories
             _context.Destinations.AddRange(destinations);
             await _context.SaveChangesAsync();
 
-            var filter = new DestinationFilterDto
+            var filter = new TestFilterCriteria
             {
                 Page = 1,
                 PageSize = 2
@@ -104,5 +104,17 @@ namespace backend.Tests.Infrastructure.Repositories
         {
             _context.Dispose();
         }
+    }
+
+    /// <summary>
+    /// Implementación de prueba de IFilterCriteria para los tests
+    /// </summary>
+    internal class TestFilterCriteria : IFilterCriteria
+    {
+        public string? SearchTerm { get; set; }
+        public string? CountryCode { get; set; }
+        public DestinationType? Type { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
     }
 }

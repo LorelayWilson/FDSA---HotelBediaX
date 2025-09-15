@@ -1,6 +1,4 @@
-using backend.Domain.Interfaces;
-
-namespace backend.Infrastructure.UnitOfWork
+namespace backend.Domain.Interfaces
 {
     /// <summary>
     /// Interfaz para el patrón Unit of Work
@@ -23,7 +21,7 @@ namespace backend.Infrastructure.UnitOfWork
         /// Inicia una nueva transacción
         /// </summary>
         /// <returns>Transacción de base de datos</returns>
-        Task<Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction> BeginTransactionAsync();
+        Task<IDbContextTransaction> BeginTransactionAsync();
 
         /// <summary>
         /// Confirma la transacción actual
@@ -34,5 +32,22 @@ namespace backend.Infrastructure.UnitOfWork
         /// Revierte la transacción actual
         /// </summary>
         Task RollbackTransactionAsync();
+    }
+
+    /// <summary>
+    /// Interfaz para transacciones de base de datos
+    /// Abstrae la implementación específica de Entity Framework
+    /// </summary>
+    public interface IDbContextTransaction : IDisposable, IAsyncDisposable
+    {
+        /// <summary>
+        /// Confirma la transacción
+        /// </summary>
+        Task CommitAsync();
+
+        /// <summary>
+        /// Revierte la transacción
+        /// </summary>
+        Task RollbackAsync();
     }
 }

@@ -1,7 +1,7 @@
 using MediatR;
 using AutoMapper;
 using backend.Application.DTOs;
-using backend.Infrastructure.UnitOfWork;
+using backend.Domain.Interfaces;
 
 namespace backend.Application.Queries
 {

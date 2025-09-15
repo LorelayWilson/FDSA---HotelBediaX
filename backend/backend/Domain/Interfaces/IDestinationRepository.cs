@@ -1,6 +1,5 @@
 using backend.Domain.Entities;
 using backend.Domain.Enums;
-using backend.Application.DTOs;
 
 namespace backend.Domain.Interfaces
 {
@@ -15,7 +14,7 @@ namespace backend.Domain.Interfaces
         /// </summary>
         /// <param name="filter">Filtros de búsqueda y paginación</param>
         /// <returns>Resultado paginado de destinos</returns>
-        Task<PagedResultDto<Destination>> GetDestinationsWithFiltersAsync(DestinationFilterDto filter);
+        Task<IPagedResult<Destination>> GetDestinationsWithFiltersAsync(IFilterCriteria filter);
 
         /// <summary>
         /// Obtiene la lista de códigos de países únicos

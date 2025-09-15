@@ -2,7 +2,7 @@ using MediatR;
 using AutoMapper;
 using backend.Application.DTOs;
 using backend.Domain.Entities;
-using backend.Infrastructure.UnitOfWork;
+using backend.Domain.Interfaces;
 using Serilog;
 
 namespace backend.Application.Commands

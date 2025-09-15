@@ -1,5 +1,5 @@
 using MediatR;
-using backend.Infrastructure.UnitOfWork;
+using backend.Domain.Interfaces;
 using Serilog;
 
 namespace backend.Application.Commands

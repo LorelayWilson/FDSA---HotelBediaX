@@ -1,9 +1,9 @@
 using backend.Infrastructure.Data;
 using backend.Infrastructure.Services;
 using backend.Presentation.Middleware;
+using backend.Domain.Interfaces;
 using backend.Infrastructure.UnitOfWork;
 using backend.Infrastructure.Repositories;
-using backend.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Microsoft.AspNetCore.Mvc;
@@ -98,7 +98,7 @@ builder.Services.AddSwaggerGen(c =>
         Contact = new Microsoft.OpenApi.Models.OpenApiContact
         {
             Name = "Lorelay Pricop",
-            Email = "lorelay.pricop@gmail.com"
+            Email = "lorelaypricop@gmail.com"
         }
     });
     

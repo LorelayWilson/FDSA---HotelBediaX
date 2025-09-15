@@ -5,7 +5,7 @@ using AutoMapper;
 using backend.Application.Queries;
 using backend.Application.DTOs;
 using backend.Domain.Entities;
-using backend.Infrastructure.UnitOfWork;
+using backend.Domain.Interfaces;
 using backend.Tests.Helpers;
 
 namespace backend.Tests.Application.Queries

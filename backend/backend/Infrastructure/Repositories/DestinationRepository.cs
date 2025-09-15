@@ -3,7 +3,6 @@ using backend.Infrastructure.Data;
 using backend.Domain.Entities;
 using backend.Domain.Enums;
 using backend.Domain.Interfaces;
-using backend.Application.DTOs;
 
 namespace backend.Infrastructure.Repositories
 {
@@ -17,7 +16,7 @@ namespace backend.Infrastructure.Repositories
         {
         }
 
-        public async Task<PagedResultDto<Destination>> GetDestinationsWithFiltersAsync(DestinationFilterDto filter)
+        public async Task<IPagedResult<Destination>> GetDestinationsWithFiltersAsync(IFilterCriteria filter)
         {
             var query = _dbSet.AsQueryable();
 
@@ -53,7 +52,7 @@ namespace backend.Infrastructure.Repositories
                 .Take(filter.PageSize)
                 .ToListAsync();
 
-            return new PagedResultDto<Destination>
+            return new PagedResult<Destination>
             {
                 Items = destinations,
                 TotalCount = totalCount,

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 using FluentAssertions;
 using backend.Infrastructure.Data;
+using backend.Domain.Interfaces;
 using backend.Infrastructure.UnitOfWork;
 using backend.Domain.Entities;
 using backend.Domain.Enums;

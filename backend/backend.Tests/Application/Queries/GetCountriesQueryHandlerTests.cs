@@ -2,7 +2,7 @@ using Xunit;
 using FluentAssertions;
 using Moq;
 using backend.Application.Queries;
-using backend.Infrastructure.UnitOfWork;
+using backend.Domain.Interfaces;
 
 namespace backend.Tests.Application.Queries
 {

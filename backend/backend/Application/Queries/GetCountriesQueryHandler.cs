@@ -1,5 +1,5 @@
 using MediatR;
-using backend.Infrastructure.UnitOfWork;
+using backend.Domain.Interfaces;
 
 namespace backend.Application.Queries
 {

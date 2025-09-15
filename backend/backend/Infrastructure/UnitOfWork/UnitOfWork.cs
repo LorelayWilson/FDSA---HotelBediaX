@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 using backend.Infrastructure.Data;
 using backend.Infrastructure.Repositories;
 using backend.Domain.Interfaces;
+using DomainTransaction = backend.Domain.Interfaces.IDbContextTransaction;
+using EfTransaction = Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction;
 
 namespace backend.Infrastructure.UnitOfWork
 {
@@ -12,7 +14,7 @@ namespace backend.Infrastructure.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        private IDbContextTransaction? _transaction;
+        private DomainTransaction? _transaction;
         private IDestinationRepository? _destinations;
 
         public UnitOfWork(ApplicationDbContext context)
@@ -45,9 +47,10 @@ namespace backend.Infrastructure.UnitOfWork
         /// Inicia una nueva transacción
         /// </summary>
         /// <returns>Transacción de base de datos</returns>
-        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        public async Task<DomainTransaction> BeginTransactionAsync()
         {
-            _transaction = await _context.Database.BeginTransactionAsync();
+            var efTransaction = await _context.Database.BeginTransactionAsync();
+            _transaction = new EfDbContextTransaction(efTransaction);
             return _transaction;
         }
 
@@ -84,6 +87,40 @@ namespace backend.Infrastructure.UnitOfWork
         {
             _transaction?.Dispose();
             _context.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Adaptador para transacciones de Entity Framework
+    /// Implementa la interfaz del dominio
+    /// </summary>
+    internal class EfDbContextTransaction : DomainTransaction
+    {
+        private readonly EfTransaction _efTransaction;
+
+        public EfDbContextTransaction(EfTransaction efTransaction)
+        {
+            _efTransaction = efTransaction;
+        }
+
+        public async Task CommitAsync()
+        {
+            await _efTransaction.CommitAsync();
+        }
+
+        public async Task RollbackAsync()
+        {
+            await _efTransaction.RollbackAsync();
+        }
+
+        public void Dispose()
+        {
+            _efTransaction.Dispose();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await _efTransaction.DisposeAsync();
         }
     }
 }

@@ -53,16 +53,23 @@ HotelBediaX/
 └── README.md               # Este archivo
 ```
 
-### Arquitectura Hexagonal (Ports and Adapters)
+### Arquitectura Hexagonal (Ports and Adapters) - Clean Architecture
 
-El backend implementa **Arquitectura Hexagonal** que separa el código en capas bien definidas:
+El backend implementa **Arquitectura Hexagonal** con principios de **Clean Architecture** que separa el código en capas bien definidas:
 
-- **Domain Layer**: Entidades, enums e interfaces del dominio (independiente de frameworks)
-- **Application Layer**: Casos de uso, CQRS (Commands/Queries), DTOs y mapeos
+- **Domain Layer**: Entidades, enums e interfaces del dominio (completamente independiente de frameworks y otras capas)
+- **Application Layer**: Casos de uso, CQRS (Commands/Queries), DTOs, adaptadores y mapeos
 - **Infrastructure Layer**: Repositorios, contexto de datos, servicios externos
 - **Presentation Layer**: Controladores de API, middleware y DTOs de presentación
 
-**Beneficios**: Testabilidad, independencia de frameworks, flexibilidad, mantenibilidad y escalabilidad.
+**Principios de Clean Architecture implementados**:
+- **Independencia de frameworks**: El dominio no depende de ninguna librería externa
+- **Testabilidad**: Cada capa puede ser probada independientemente
+- **Independencia de UI**: La lógica de negocio no depende de la interfaz
+- **Independencia de base de datos**: El dominio no conoce detalles de persistencia
+- **Independencia de agentes externos**: La lógica de negocio no depende de servicios externos
+
+**Beneficios**: Testabilidad, independencia de frameworks, flexibilidad, mantenibilidad, escalabilidad y adherencia a principios SOLID.
 
 ## Funcionalidades Principales
 
@@ -158,16 +165,26 @@ dotnet test
 
 ## Características Técnicas Implementadas
 
-### **Arquitectura Hexagonal (Ports and Adapters)**
-- **Domain Layer** - Lógica de negocio pura e independiente de frameworks
-- **Application Layer** - Casos de uso con CQRS (Commands/Queries)
+### **Arquitectura Hexagonal (Ports and Adapters) - Clean Architecture**
+- **Domain Layer** - Lógica de negocio pura e independiente de frameworks y otras capas
+- **Application Layer** - Casos de uso con CQRS (Commands/Queries), adaptadores y DTOs
 - **Infrastructure Layer** - Implementaciones concretas de repositorios y servicios
 - **Presentation Layer** - Controladores de API y middleware
-- **Repository Pattern** - Abstracción del acceso a datos
+- **Repository Pattern** - Abstracción del acceso a datos con interfaces del dominio
 - **Unit of Work** - Coordinación de transacciones complejas
 - **MediatR** - Desacoplamiento entre controladores y lógica de negocio
 - **Handlers especializados** - Cada operación tiene su handler específico
+- **Adaptadores** - Conversión entre interfaces del dominio y DTOs de aplicación
+- **Interfaces del dominio** - IPagedResult, IFilterCriteria para mantener independencia
 - **API Versioning** - Infraestructura preparada para versionado futuro
+
+### **Mejoras de Clean Architecture Implementadas**
+- **Eliminación de dependencias incorrectas**: El dominio ya no depende de DTOs de Application
+- **Interfaces del dominio**: IPagedResult, IFilterCriteria e IUnitOfWork para mantener independencia
+- **Adaptadores**: DestinationFilterAdapter, PagedResultAdapter y EfDbContextTransaction para conversión entre capas
+- **Separación de responsabilidades**: Cada capa tiene responsabilidades bien definidas
+- **Testabilidad mejorada**: Los tests pueden usar interfaces del dominio sin acoplamiento
+- **Application independiente de Infrastructure**: Los handlers usan interfaces del dominio, no implementaciones concretas
 
 ### **Logging Estructurado**
 - **Serilog** configurado con múltiples sinks (Console, File)

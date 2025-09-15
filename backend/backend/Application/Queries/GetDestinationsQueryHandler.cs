@@ -1,7 +1,8 @@
 using MediatR;
 using AutoMapper;
 using backend.Application.DTOs;
-using backend.Infrastructure.UnitOfWork;
+using backend.Application.Adapters;
+using backend.Domain.Interfaces;
 
 namespace backend.Application.Queries
 {
@@ -21,19 +22,14 @@ namespace backend.Application.Queries
 
         public async Task<PagedResultDto<DestinationDto>> Handle(GetDestinationsQuery request, CancellationToken cancellationToken)
         {
-            // Obtener destinos con filtros usando el repositorio
-            var result = await _unitOfWork.Destinations.GetDestinationsWithFiltersAsync(request.Filter);
+            // Convertir DTO de filtro a criterios del dominio
+            var domainFilter = DestinationFilterAdapter.ToDomainCriteria(request.Filter);
 
-            // Mapear entidades a DTOs
-            var destinationDtos = _mapper.Map<List<DestinationDto>>(result.Items);
+            // Obtener destinos con filtros usando el repositorio del dominio
+            var domainResult = await _unitOfWork.Destinations.GetDestinationsWithFiltersAsync(domainFilter);
 
-            return new PagedResultDto<DestinationDto>
-            {
-                Items = destinationDtos,
-                TotalCount = result.TotalCount,
-                Page = result.Page,
-                PageSize = result.PageSize
-            };
+            // Convertir resultado del dominio a DTO usando el adaptador
+            return PagedResultAdapter.ToDto(domainResult, entity => _mapper.Map<DestinationDto>(entity));
         }
     }
 }
