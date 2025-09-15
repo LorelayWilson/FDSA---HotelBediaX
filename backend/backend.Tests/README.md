@@ -131,7 +131,7 @@ backend.Tests/
 - Validar fechas y IDs únicos
 - Cobertura de todos los tipos de destino
 
-#### AutoMapperProfileTests
+#### AdapterTests
 - Mapeo de entidades a DTOs
 - Mapeo de DTOs a entidades
 - Mapeo de listas
@@ -255,8 +255,8 @@ La clase `TestDataHelper` proporciona métodos para crear datos de prueba consis
 - Los tests usan nombres únicos de base de datos con `Guid.NewGuid()`
 - Si persiste, limpiar la base de datos en memoria
 
-### Error: "AutoMapper configuration invalid"
-- Verificar que todos los mapeos estén definidos en `AutoMapperProfile`
+### Error: "Mapeo de entidades fallido"
+- Verificar que todos los adaptadores estén implementados correctamente
 - Ejecutar `config.AssertConfigurationIsValid()` en los tests
 
 ### Tests lentos

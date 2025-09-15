@@ -33,7 +33,7 @@ backend/
 │   ├── Commands/        # CQRS - Comandos para escritura
 │   ├── Queries/         # CQRS - Queries para lectura
 │   ├── DTOs/            # Objetos de transferencia
-│   └── Mapping/         # Configuración AutoMapper
+│   └── Adapters/        # Adaptadores manuales para mapeo
 ├── Infrastructure/       # INFRAESTRUCTURA - Persistencia
 │   ├── Data/            # Contexto Entity Framework
 │   ├── Repositories/    # Repository Pattern (Adapters)
@@ -156,7 +156,7 @@ La API soporta múltiples métodos de versionado:
 
 ### Patrones y Librerías
 - **MediatR**: Implementación de CQRS y patrón Mediator
-- **AutoMapper**: Mapeo automático entre entidades y DTOs
+- **Adaptadores manuales**: Mapeo explícito entre entidades y DTOs
 - **Repository Pattern**: Abstracción del acceso a datos
 - **Unit of Work**: Coordinación de transacciones
 
@@ -199,8 +199,8 @@ Para información detallada sobre testing, cobertura y ejecución de tests, cons
 - MediatR (11.1.0)
 - MediatR.Extensions.Microsoft.DependencyInjection (11.1.0)
 
-**AutoMapper:**
-- AutoMapper.Extensions.Microsoft.DependencyInjection (12.0.1)
+**Adaptadores manuales:**
+- Mapeo explícito sin dependencias externas
 
 **Logging:**
 - Serilog.AspNetCore (8.0.3)
@@ -215,7 +215,7 @@ Para información detallada sobre testing, cobertura y ejecución de tests, cons
 
 - **CORS**: Configurado para Angular (puerto 4200)
 - **Entity Framework**: Base de datos en memoria con índices optimizados
-- **AutoMapper**: Mapeo automático entre entidades y DTOs
+- **Adaptadores manuales**: Mapeo explícito entre entidades y DTOs
 - **MediatR**: Configuración automática de handlers CQRS
 - **API Versioning**: Configuración para versionado de API
 - **Swagger**: Documentación automática de la API
@@ -250,8 +250,8 @@ Para información detallada sobre testing, cobertura y ejecución de tests, cons
 - Verificar que el contexto esté configurado correctamente en `Program.cs`
 - Asegurar que se use `AddDbContext` con el scope correcto
 
-### Error: "AutoMapper configuration invalid"
-- Verificar que todos los mapeos estén definidos en `AutoMapperProfile`
+### Error: "Mapeo de entidades fallido"
+- Verificar que todos los adaptadores estén implementados correctamente
 - Ejecutar `config.AssertConfigurationIsValid()` en desarrollo
 
 ## Autor
