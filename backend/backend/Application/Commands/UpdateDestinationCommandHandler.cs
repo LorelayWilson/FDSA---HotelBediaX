@@ -1,6 +1,6 @@
 using MediatR;
-using AutoMapper;
 using backend.Application.DTOs;
+using backend.Application.Adapters;
 using backend.Domain.Interfaces;
 using Serilog;
 
@@ -12,12 +12,10 @@ namespace backend.Application.Commands
     public class UpdateDestinationCommandHandler : IRequestHandler<UpdateDestinationCommand, DestinationDto?>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public UpdateDestinationCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public UpdateDestinationCommandHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
         public async Task<DestinationDto?> Handle(UpdateDestinationCommand request, CancellationToken cancellationToken)
@@ -31,11 +29,8 @@ namespace backend.Application.Commands
                 return null;
             }
 
-            // Aplicar los cambios del DTO a la entidad
-            _mapper.Map(request.UpdateDestinationDto, destination);
-            
-            // Actualizar fecha de modificación
-            destination.LastModif = DateTime.UtcNow;
+            // Aplicar los cambios del DTO a la entidad usando adaptador
+            DestinationMapper.UpdateEntity(request.UpdateDestinationDto, destination);
 
             // Actualizar en la base de datos
             _unitOfWork.Destinations.Update(destination);
@@ -44,8 +39,8 @@ namespace backend.Application.Commands
             Log.Information("Destino actualizado: {DestinationName} (ID: {DestinationId})", 
                 destination.Name, destination.ID);
 
-            // Retornar DTO del destino actualizado
-            return _mapper.Map<DestinationDto>(destination);
+            // Retornar DTO del destino actualizado usando adaptador
+            return DestinationMapper.ToDto(destination);
         }
     }
 }

@@ -70,9 +70,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseInMemoryDatabase("HotelBediaXDb"));
 
-// Configurar AutoMapper para mapeo automático entre entidades y DTOs
-// Busca automáticamente todos los perfiles en el assembly
-builder.Services.AddAutoMapper(typeof(Program));
+// Registrar adaptadores para conversión entre entidades y DTOs
+builder.Services.AddScoped<backend.Domain.Interfaces.IDestinationAdapter, backend.Application.Adapters.DestinationAdapter>();
 
 // Configurar MediatR para CQRS
 builder.Services.AddMediatR(typeof(Program).Assembly);

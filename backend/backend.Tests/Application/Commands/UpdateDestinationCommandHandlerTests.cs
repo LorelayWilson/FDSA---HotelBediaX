@@ -1,7 +1,6 @@
 using Xunit;
 using FluentAssertions;
 using Moq;
-using AutoMapper;
 using backend.Application.Commands;
 using backend.Application.DTOs;
 using backend.Domain.Entities;

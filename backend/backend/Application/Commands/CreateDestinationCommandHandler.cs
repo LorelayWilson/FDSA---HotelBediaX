@@ -1,6 +1,6 @@
 using MediatR;
-using AutoMapper;
 using backend.Application.DTOs;
+using backend.Application.Adapters;
 using backend.Domain.Entities;
 using backend.Domain.Interfaces;
 using Serilog;
@@ -13,21 +13,16 @@ namespace backend.Application.Commands
     public class CreateDestinationCommandHandler : IRequestHandler<CreateDestinationCommand, DestinationDto>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public CreateDestinationCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateDestinationCommandHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
         public async Task<DestinationDto> Handle(CreateDestinationCommand request, CancellationToken cancellationToken)
         {
-            // Mapear DTO a entidad
-            var destination = _mapper.Map<Destination>(request.CreateDestinationDto);
-            
-            // Asignar fecha de modificación automáticamente
-            destination.LastModif = DateTime.UtcNow;
+            // Mapear DTO a entidad usando adaptador
+            var destination = DestinationMapper.ToEntity(request.CreateDestinationDto);
 
             // Agregar a la base de datos
             _unitOfWork.Destinations.Add(destination);
@@ -36,8 +31,8 @@ namespace backend.Application.Commands
             Log.Information("Destino creado: {DestinationName} (ID: {DestinationId}) en {CountryCode}", 
                 destination.Name, destination.ID, destination.CountryCode);
 
-            // Retornar DTO del destino creado
-            return _mapper.Map<DestinationDto>(destination);
+            // Retornar DTO del destino creado usando adaptador
+            return DestinationMapper.ToDto(destination);
         }
     }
 }

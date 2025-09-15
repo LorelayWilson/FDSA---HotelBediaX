@@ -1,5 +1,4 @@
 using MediatR;
-using AutoMapper;
 using backend.Application.DTOs;
 using backend.Application.Adapters;
 using backend.Domain.Interfaces;
@@ -12,12 +11,10 @@ namespace backend.Application.Queries
     public class GetDestinationsQueryHandler : IRequestHandler<GetDestinationsQuery, PagedResultDto<DestinationDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public GetDestinationsQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetDestinationsQueryHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
         public async Task<PagedResultDto<DestinationDto>> Handle(GetDestinationsQuery request, CancellationToken cancellationToken)
@@ -29,7 +26,7 @@ namespace backend.Application.Queries
             var domainResult = await _unitOfWork.Destinations.GetDestinationsWithFiltersAsync(domainFilter);
 
             // Convertir resultado del dominio a DTO usando el adaptador
-            return PagedResultAdapter.ToDto(domainResult, entity => _mapper.Map<DestinationDto>(entity));
+            return PagedResultAdapter.ToDto(domainResult, entity => DestinationMapper.ToDto(entity));
         }
     }
 }

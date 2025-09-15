@@ -1,6 +1,6 @@
 using MediatR;
-using AutoMapper;
 using backend.Application.DTOs;
+using backend.Application.Adapters;
 using backend.Domain.Interfaces;
 
 namespace backend.Application.Queries
@@ -11,12 +11,10 @@ namespace backend.Application.Queries
     public class GetDestinationByIdQueryHandler : IRequestHandler<GetDestinationByIdQuery, DestinationDto?>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public GetDestinationByIdQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetDestinationByIdQueryHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
         public async Task<DestinationDto?> Handle(GetDestinationByIdQuery request, CancellationToken cancellationToken)
@@ -24,8 +22,8 @@ namespace backend.Application.Queries
             // Buscar el destino por ID
             var destination = await _unitOfWork.Destinations.GetByIdAsync(request.Id);
 
-            // Retornar DTO mapeado o null si no existe
-            return destination != null ? _mapper.Map<DestinationDto>(destination) : null;
+            // Retornar DTO mapeado o null si no existe usando adaptador
+            return destination != null ? DestinationMapper.ToDto(destination) : null;
         }
     }
 }
