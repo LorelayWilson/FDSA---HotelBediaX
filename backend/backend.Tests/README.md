@@ -2,34 +2,39 @@
 
 Este proyecto contiene los tests unitarios y de integración para el backend de HotelBediaX.
 
-## Estructura del Proyecto - Tests para Arquitectura Hexagonal
+## Estructura del Proyecto - Tests por Puertos/Contratos (Clean Architecture)
 
 ```
 backend.Tests/
+├── Ports/                # Tests de contratos/interfaces (Puertos)
+│   ├── Repositories/     # Tests de contratos de repositorios
+│   │   └── IDestinationRepositoryContractTests.cs
+│   ├── Adapters/         # Tests de contratos de adaptadores
+│   │   └── IDestinationAdapterContractTests.cs
+│   └── Services/         # Tests de contratos de servicios
+│       └── IUnitOfWorkContractTests.cs
+├── UseCases/             # Tests de casos de uso (Application)
+│   ├── Commands/         # Tests para command handlers
+│   │   ├── CreateDestinationCommandHandlerTests.cs
+│   │   ├── UpdateDestinationCommandHandlerTests.cs
+│   │   └── DeleteDestinationCommandHandlerTests.cs
+│   └── Queries/          # Tests para query handlers
+│       ├── GetDestinationsQueryHandlerTests.cs
+│       ├── GetDestinationByIdQueryHandlerTests.cs
+│       ├── GetCountriesQueryHandlerTests.cs
+│       └── GetDestinationTypesQueryHandlerTests.cs
+├── Infrastructure/       # Tests de implementaciones concretas
+│   ├── Repositories/     # Tests de implementación de repositorios
+│   │   └── DestinationRepositoryTests.cs
+│   ├── Services/         # Tests de implementación de servicios
+│   │   └── DataSeedServiceTests.cs
+│   └── UnitOfWork/       # Tests de implementación de Unit of Work
+│       └── UnitOfWorkTests.cs
 ├── Domain/               # Tests para capa de dominio
 │   ├── Entities/         # Tests para entidades
 │   │   └── DestinationTests.cs
 │   └── Enums/           # Tests para enumeraciones
 │       └── DestinationTypeTests.cs
-├── Application/          # Tests para capa de aplicación
-│   ├── Commands/        # Tests para command handlers
-│   │   ├── CreateDestinationCommandHandlerTests.cs
-│   │   ├── UpdateDestinationCommandHandlerTests.cs
-│   │   └── DeleteDestinationCommandHandlerTests.cs
-│   ├── Queries/         # Tests para query handlers
-│   │   ├── GetDestinationsQueryHandlerTests.cs
-│   │   ├── GetDestinationByIdQueryHandlerTests.cs
-│   │   ├── GetCountriesQueryHandlerTests.cs
-│   │   └── GetDestinationTypesQueryHandlerTests.cs
-│   └── Mapping/         # Tests para AutoMapper
-│       └── AutoMapperProfileTests.cs
-├── Infrastructure/       # Tests para capa de infraestructura
-│   ├── Repositories/    # Tests para repositorios
-│   │   └── DestinationRepositoryTests.cs
-│   ├── Services/        # Tests para servicios
-│   │   └── DataSeedServiceTests.cs
-│   └── UnitOfWork/      # Tests para Unit of Work
-│       └── UnitOfWorkTests.cs
 ├── Presentation/         # Tests para capa de presentación
 │   ├── Controllers/     # Tests para controladores
 │   │   └── DestinationsControllerTests.cs
@@ -42,28 +47,55 @@ backend.Tests/
 └── README.md
 ```
 
-### **Tests por Capa de Arquitectura Hexagonal**
+### **Tests por Puertos/Contratos (Clean Architecture)**
 
-#### **Domain Layer Tests** 
+#### **Ports Tests (Contratos/Interfaces)**
+- **IDestinationRepositoryContractTests**: Tests de contrato para repositorio de destinos
+- **IDestinationAdapterContractTests**: Tests de contrato para adaptadores de mapeo
+- **IUnitOfWorkContractTests**: Tests de contrato para Unit of Work
+
+#### **UseCases Tests (Casos de Uso)**
+- **Command Handlers**: Tests para Create, Update, Delete destinations
+- **Query Handlers**: Tests para GetDestinations, GetById, GetCountries, GetTypes
+
+#### **Infrastructure Tests (Implementaciones Concretas)**
+- **DestinationRepositoryTests**: Tests de implementación de repositorio
+- **DataSeedServiceTests**: Tests de implementación de servicio de datos
+- **UnitOfWorkTests**: Tests de implementación de Unit of Work
+
+#### **Domain Tests (Entidades del Dominio)**
 - **DestinationTests**: Tests para entidad del dominio
 - **DestinationTypeTests**: Tests para enumeración de tipos
 
-#### **Application Layer Tests** 
-- **Command Handlers**: Tests para Create, Update, Delete destinations
-- **Query Handlers**: Tests para GetDestinations, GetById, GetCountries, GetTypes
-- **AutoMapperProfileTests**: Tests para mapeo de DTOs
-
-#### **Infrastructure Layer Tests** 
-- **DestinationRepositoryTests**: Tests para repositorio de destinos
-- **DataSeedServiceTests**: Tests para servicio de datos iniciales
-- **UnitOfWorkTests**: Tests para coordinación de transacciones
-
-#### **Presentation Layer Tests** 
+#### **Presentation Tests (Capa de Presentación)**
 - **DestinationsControllerTests**: Tests unitarios para controladores
 - **GlobalExceptionMiddlewareTests**: Tests para middleware de excepciones
 
-#### **Integration Tests** 
+#### **Integration Tests (End-to-End)**
 - **DestinationsControllerIntegrationTests**: Tests end-to-end para API completa
+
+### **Diferencias entre Ports e Infrastructure Tests**
+
+#### **Ports Tests (Contratos/Interfaces)**
+- **Propósito**: Verificar que cualquier implementación cumpla con el contrato
+- **Independencia**: No dependen de implementaciones específicas
+- **Reutilización**: Se pueden usar para probar múltiples implementaciones
+- **Ejemplo**: `IDestinationRepositoryContractTests` verifica que cualquier repositorio cumpla el contrato
+
+#### **Infrastructure Tests (Implementaciones Concretas)**
+- **Propósito**: Verificar la implementación específica de un contrato
+- **Dependencia**: Dependen de la implementación concreta (EF, InMemory, etc.)
+- **Específicos**: Prueban detalles específicos de la implementación
+- **Ejemplo**: `DestinationRepositoryTests` verifica la implementación con Entity Framework
+
+### **Ventajas de la Estructura por Puertos/Contratos**
+
+1. **Tests de Contrato**: Verifican que cualquier implementación cumpla con el contrato
+2. **Independencia de Implementación**: Los tests de contrato no dependen de implementaciones específicas
+3. **Facilita el Testing**: Se pueden probar múltiples implementaciones del mismo contrato
+4. **Clean Architecture**: Refleja la separación entre puertos (interfaces) y adaptadores (implementaciones)
+5. **Mantenibilidad**: Cambios en implementaciones no afectan tests de contrato
+6. **Flexibilidad**: Permite cambiar implementaciones sin romper tests de contrato
 
 ## Tecnologías Utilizadas
 
