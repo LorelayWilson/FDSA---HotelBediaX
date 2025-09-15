@@ -10,11 +10,11 @@ namespace backend.Application.Queries
     /// </summary>
     public class GetDestinationsQueryHandler : IRequestHandler<GetDestinationsQuery, PagedResultDto<DestinationDto>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositoryManager _repositoryManager;
 
-        public GetDestinationsQueryHandler(IUnitOfWork unitOfWork)
+        public GetDestinationsQueryHandler(IRepositoryManager repositoryManager)
         {
-            _unitOfWork = unitOfWork;
+            _repositoryManager = repositoryManager;
         }
 
         public async Task<PagedResultDto<DestinationDto>> Handle(GetDestinationsQuery request, CancellationToken cancellationToken)
@@ -23,7 +23,7 @@ namespace backend.Application.Queries
             var domainFilter = DestinationFilterAdapter.ToDomainCriteria(request.Filter);
 
             // Obtener destinos con filtros usando el repositorio del dominio
-            var domainResult = await _unitOfWork.Destinations.GetDestinationsWithFiltersAsync(domainFilter);
+            var domainResult = await _repositoryManager.Destinations.GetDestinationsWithFiltersAsync(domainFilter);
 
             // Convertir resultado del dominio a DTO usando el adaptador
             return PagedResultAdapter.ToDto(domainResult, entity => DestinationMapper.ToDto(entity));

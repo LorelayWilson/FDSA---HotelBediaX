@@ -15,13 +15,13 @@ namespace backend.Tests.Application.Queries
     /// </summary>
     public class GetDestinationsQueryHandlerTests
     {
-        private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+        private readonly Mock<IRepositoryManager> _mockRepositoryManager;
         private readonly GetDestinationsQueryHandler _handler;
 
         public GetDestinationsQueryHandlerTests()
         {
-            _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _handler = new GetDestinationsQueryHandler(_mockUnitOfWork.Object);
+            _mockRepositoryManager = new Mock<IRepositoryManager>();
+            _handler = new GetDestinationsQueryHandler(_mockRepositoryManager.Object);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace backend.Tests.Application.Queries
                 PageSize = filter.PageSize
             };
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetDestinationsWithFiltersAsync(It.IsAny<IFilterCriteria>()))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetDestinationsWithFiltersAsync(It.IsAny<IFilterCriteria>()))
                           .ReturnsAsync(pagedResult);
 
             // Act
@@ -74,7 +74,7 @@ namespace backend.Tests.Application.Queries
                 PageSize = filter.PageSize
             };
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetDestinationsWithFiltersAsync(It.IsAny<IFilterCriteria>()))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetDestinationsWithFiltersAsync(It.IsAny<IFilterCriteria>()))
                           .ReturnsAsync(emptyPagedResult);
 
             // Act

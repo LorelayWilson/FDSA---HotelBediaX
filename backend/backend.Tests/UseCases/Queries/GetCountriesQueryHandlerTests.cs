@@ -12,13 +12,13 @@ namespace backend.Tests.Application.Queries
     /// </summary>
     public class GetCountriesQueryHandlerTests
     {
-        private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+        private readonly Mock<IRepositoryManager> _mockRepositoryManager;
         private readonly GetCountriesQueryHandler _handler;
 
         public GetCountriesQueryHandlerTests()
         {
-            _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _handler = new GetCountriesQueryHandler(_mockUnitOfWork.Object);
+            _mockRepositoryManager = new Mock<IRepositoryManager>();
+            _handler = new GetCountriesQueryHandler(_mockRepositoryManager.Object);
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace backend.Tests.Application.Queries
             var query = new GetCountriesQuery();
             var expectedCountries = new List<string> { "MEX", "FRA", "JPN", "ESP", "USA" };
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetUniqueCountryCodesAsync())
+            _mockRepositoryManager.Setup(r => r.Destinations.GetUniqueCountryCodesAsync())
                           .ReturnsAsync(expectedCountries);
 
             // Act
@@ -47,7 +47,7 @@ namespace backend.Tests.Application.Queries
             var query = new GetCountriesQuery();
             var emptyCountries = new List<string>();
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetUniqueCountryCodesAsync())
+            _mockRepositoryManager.Setup(r => r.Destinations.GetUniqueCountryCodesAsync())
                           .ReturnsAsync(emptyCountries);
 
             // Act
@@ -65,14 +65,14 @@ namespace backend.Tests.Application.Queries
             var query = new GetCountriesQuery();
             var countries = new List<string> { "MEX", "FRA" };
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetUniqueCountryCodesAsync())
+            _mockRepositoryManager.Setup(r => r.Destinations.GetUniqueCountryCodesAsync())
                           .ReturnsAsync(countries);
 
             // Act
             await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            _mockUnitOfWork.Verify(u => u.Destinations.GetUniqueCountryCodesAsync(), Times.Once);
+            _mockRepositoryManager.Verify(r => r.Destinations.GetUniqueCountryCodesAsync(), Times.Once);
         }
     }
 }

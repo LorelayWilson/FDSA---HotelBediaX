@@ -11,17 +11,17 @@ namespace backend.Application.Commands
     /// </summary>
     public class UpdateDestinationCommandHandler : IRequestHandler<UpdateDestinationCommand, DestinationDto?>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositoryManager _repositoryManager;
 
-        public UpdateDestinationCommandHandler(IUnitOfWork unitOfWork)
+        public UpdateDestinationCommandHandler(IRepositoryManager repositoryManager)
         {
-            _unitOfWork = unitOfWork;
+            _repositoryManager = repositoryManager;
         }
 
         public async Task<DestinationDto?> Handle(UpdateDestinationCommand request, CancellationToken cancellationToken)
         {
             // Buscar el destino a actualizar
-            var destination = await _unitOfWork.Destinations.GetByIdAsync(request.Id);
+            var destination = await _repositoryManager.Destinations.GetByIdAsync(request.Id);
 
             if (destination == null)
             {
@@ -33,8 +33,8 @@ namespace backend.Application.Commands
             DestinationMapper.UpdateEntity(request.UpdateDestinationDto, destination);
 
             // Actualizar en la base de datos
-            _unitOfWork.Destinations.Update(destination);
-            await _unitOfWork.SaveChangesAsync();
+            _repositoryManager.Destinations.Update(destination);
+            await _repositoryManager.SaveChangesAsync();
 
             Log.Information("Destino actualizado: {DestinationName} (ID: {DestinationId})", 
                 destination.Name, destination.ID);

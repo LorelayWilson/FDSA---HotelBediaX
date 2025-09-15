@@ -15,13 +15,13 @@ namespace backend.Tests.Application.Commands
     /// </summary>
     public class UpdateDestinationCommandHandlerTests
     {
-        private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+        private readonly Mock<IRepositoryManager> _mockRepositoryManager;
         private readonly UpdateDestinationCommandHandler _handler;
 
         public UpdateDestinationCommandHandlerTests()
         {
-            _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _handler = new UpdateDestinationCommandHandler(_mockUnitOfWork.Object);
+            _mockRepositoryManager = new Mock<IRepositoryManager>();
+            _handler = new UpdateDestinationCommandHandler(_mockRepositoryManager.Object);
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace backend.Tests.Application.Commands
             var existingDestination = TestDataHelper.CreateTestDestination();
             var expectedDto = TestDataHelper.CreateTestDestinationDto();
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(1))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(1))
                           .ReturnsAsync(existingDestination);
 
             // Act
@@ -42,8 +42,8 @@ namespace backend.Tests.Application.Commands
             // Assert
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(expectedDto);
-            _mockUnitOfWork.Verify(u => u.Destinations.Update(existingDestination), Times.Once);
-            _mockUnitOfWork.Verify(u => u.SaveChangesAsync(), Times.Once);
+            _mockRepositoryManager.Verify(r => r.Destinations.Update(existingDestination), Times.Once);
+            _mockRepositoryManager.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace backend.Tests.Application.Commands
             var updateDto = TestDataHelper.CreateTestUpdateDestinationDto();
             var command = new UpdateDestinationCommand { Id = 999, UpdateDestinationDto = updateDto };
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(999))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(999))
                           .ReturnsAsync((Destination?)null);
 
             // Act
@@ -61,8 +61,8 @@ namespace backend.Tests.Application.Commands
 
             // Assert
             result.Should().BeNull();
-            _mockUnitOfWork.Verify(u => u.Destinations.Update(It.IsAny<Destination>()), Times.Never);
-            _mockUnitOfWork.Verify(u => u.SaveChangesAsync(), Times.Never);
+            _mockRepositoryManager.Verify(r => r.Destinations.Update(It.IsAny<Destination>()), Times.Never);
+            _mockRepositoryManager.Verify(r => r.SaveChangesAsync(), Times.Never);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace backend.Tests.Application.Commands
             var existingDestination = TestDataHelper.CreateTestDestination();
             var expectedDto = TestDataHelper.CreateTestDestinationDto();
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(1))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(1))
                           .ReturnsAsync(existingDestination);
 
             // Act

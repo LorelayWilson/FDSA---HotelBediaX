@@ -80,7 +80,7 @@ builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
 
 // Registrar Unit of Work
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 
 // Registrar servicios de la aplicación
 builder.Services.AddScoped<DataSeedService>();                          // Servicio para poblar datos de ejemplo

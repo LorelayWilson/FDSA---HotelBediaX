@@ -10,17 +10,17 @@ namespace backend.Application.Queries
     /// </summary>
     public class GetDestinationByIdQueryHandler : IRequestHandler<GetDestinationByIdQuery, DestinationDto?>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositoryManager _repositoryManager;
 
-        public GetDestinationByIdQueryHandler(IUnitOfWork unitOfWork)
+        public GetDestinationByIdQueryHandler(IRepositoryManager repositoryManager)
         {
-            _unitOfWork = unitOfWork;
+            _repositoryManager = repositoryManager;
         }
 
         public async Task<DestinationDto?> Handle(GetDestinationByIdQuery request, CancellationToken cancellationToken)
         {
             // Buscar el destino por ID
-            var destination = await _unitOfWork.Destinations.GetByIdAsync(request.Id);
+            var destination = await _repositoryManager.Destinations.GetByIdAsync(request.Id);
 
             // Retornar DTO mapeado o null si no existe usando adaptador
             return destination != null ? DestinationMapper.ToDto(destination) : null;

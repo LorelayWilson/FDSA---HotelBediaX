@@ -8,16 +8,16 @@ namespace backend.Application.Queries
     /// </summary>
     public class GetCountriesQueryHandler : IRequestHandler<GetCountriesQuery, List<string>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositoryManager _repositoryManager;
 
-        public GetCountriesQueryHandler(IUnitOfWork unitOfWork)
+        public GetCountriesQueryHandler(IRepositoryManager repositoryManager)
         {
-            _unitOfWork = unitOfWork;
+            _repositoryManager = repositoryManager;
         }
 
         public async Task<List<string>> Handle(GetCountriesQuery request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.Destinations.GetUniqueCountryCodesAsync();
+            return await _repositoryManager.Destinations.GetUniqueCountryCodesAsync();
         }
     }
 }

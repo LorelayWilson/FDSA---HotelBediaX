@@ -12,11 +12,11 @@ namespace backend.Application.Commands
     /// </summary>
     public class CreateDestinationCommandHandler : IRequestHandler<CreateDestinationCommand, DestinationDto>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositoryManager _repositoryManager;
 
-        public CreateDestinationCommandHandler(IUnitOfWork unitOfWork)
+        public CreateDestinationCommandHandler(IRepositoryManager repositoryManager)
         {
-            _unitOfWork = unitOfWork;
+            _repositoryManager = repositoryManager;
         }
 
         public async Task<DestinationDto> Handle(CreateDestinationCommand request, CancellationToken cancellationToken)
@@ -25,8 +25,8 @@ namespace backend.Application.Commands
             var destination = DestinationMapper.ToEntity(request.CreateDestinationDto);
 
             // Agregar a la base de datos
-            _unitOfWork.Destinations.Add(destination);
-            await _unitOfWork.SaveChangesAsync();
+            _repositoryManager.Destinations.Add(destination);
+            await _repositoryManager.SaveChangesAsync();
 
             Log.Information("Destino creado: {DestinationName} (ID: {DestinationId}) en {CountryCode}", 
                 destination.Name, destination.ID, destination.CountryCode);

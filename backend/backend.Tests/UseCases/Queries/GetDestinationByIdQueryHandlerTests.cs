@@ -15,13 +15,13 @@ namespace backend.Tests.Application.Queries
     /// </summary>
     public class GetDestinationByIdQueryHandlerTests
     {
-        private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+        private readonly Mock<IRepositoryManager> _mockRepositoryManager;
         private readonly GetDestinationByIdQueryHandler _handler;
 
         public GetDestinationByIdQueryHandlerTests()
         {
-            _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _handler = new GetDestinationByIdQueryHandler(_mockUnitOfWork.Object);
+            _mockRepositoryManager = new Mock<IRepositoryManager>();
+            _handler = new GetDestinationByIdQueryHandler(_mockRepositoryManager.Object);
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace backend.Tests.Application.Queries
             var destination = TestDataHelper.CreateTestDestination();
             var expectedDto = TestDataHelper.CreateTestDestinationDto();
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(1))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(1))
                           .ReturnsAsync(destination);
 
             // Act
@@ -49,7 +49,7 @@ namespace backend.Tests.Application.Queries
             // Arrange
             var query = new GetDestinationByIdQuery { Id = 999 };
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(999))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(999))
                           .ReturnsAsync((Destination?)null);
 
             // Act
@@ -67,14 +67,14 @@ namespace backend.Tests.Application.Queries
             var destination = TestDataHelper.CreateTestDestination();
             var expectedDto = TestDataHelper.CreateTestDestinationDto();
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(1))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(1))
                           .ReturnsAsync(destination);
 
             // Act
             await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            _mockUnitOfWork.Verify(u => u.Destinations.GetByIdAsync(1), Times.Once);
+            _mockRepositoryManager.Verify(r => r.Destinations.GetByIdAsync(1), Times.Once);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace backend.Tests.Infrastructure.UnitOfWork
     public class UnitOfWorkTests : IDisposable
     {
         private readonly ApplicationDbContext _context;
-        private readonly backend.Infrastructure.UnitOfWork.UnitOfWork _unitOfWork;
+        private readonly backend.Infrastructure.UnitOfWork.UnitOfWork _repositoryManager;
 
         public UnitOfWorkTests()
         {
@@ -25,14 +25,14 @@ namespace backend.Tests.Infrastructure.UnitOfWork
                 .Options;
 
             _context = new ApplicationDbContext(options);
-            _unitOfWork = new backend.Infrastructure.UnitOfWork.UnitOfWork(_context);
+            _repositoryManager = new backend.Infrastructure.UnitOfWork.UnitOfWork(_context);
         }
 
         [Fact]
         public void UnitOfWork_ShouldHaveDestinationsRepository()
         {
             // Act & Assert
-            _unitOfWork.Destinations.Should().NotBeNull();
+            _repositoryManager.Destinations.Should().NotBeNull();
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace backend.Tests.Infrastructure.UnitOfWork
             _context.Destinations.Add(destination);
 
             // Act
-            var result = await _unitOfWork.SaveChangesAsync();
+            var result = await _repositoryManager.SaveChangesAsync();
 
             // Assert
             result.Should().BeGreaterThan(0);
@@ -64,7 +64,7 @@ namespace backend.Tests.Infrastructure.UnitOfWork
         public async Task SaveChangesAsync_WithNoChanges_ShouldReturnZero()
         {
             // Act
-            var result = await _unitOfWork.SaveChangesAsync();
+            var result = await _repositoryManager.SaveChangesAsync();
 
             // Assert
             result.Should().Be(0);
@@ -74,7 +74,7 @@ namespace backend.Tests.Infrastructure.UnitOfWork
         public void Dispose_ShouldDisposeContext()
         {
             // Act
-            _unitOfWork.Dispose();
+            _repositoryManager.Dispose();
 
             // Assert - No exception should be thrown
             // The context should be disposed properly

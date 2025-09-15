@@ -9,17 +9,17 @@ namespace backend.Application.Commands
     /// </summary>
     public class DeleteDestinationCommandHandler : IRequestHandler<DeleteDestinationCommand, bool>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositoryManager _repositoryManager;
 
-        public DeleteDestinationCommandHandler(IUnitOfWork unitOfWork)
+        public DeleteDestinationCommandHandler(IRepositoryManager repositoryManager)
         {
-            _unitOfWork = unitOfWork;
+            _repositoryManager = repositoryManager;
         }
 
         public async Task<bool> Handle(DeleteDestinationCommand request, CancellationToken cancellationToken)
         {
             // Buscar el destino a eliminar
-            var destination = await _unitOfWork.Destinations.GetByIdAsync(request.Id);
+            var destination = await _repositoryManager.Destinations.GetByIdAsync(request.Id);
 
             if (destination == null)
             {
@@ -28,8 +28,8 @@ namespace backend.Application.Commands
             }
 
             // Eliminar de la base de datos
-            _unitOfWork.Destinations.Remove(destination);
-            await _unitOfWork.SaveChangesAsync();
+                _repositoryManager.Destinations.Remove(destination);
+                await _repositoryManager.SaveChangesAsync();
 
             Log.Information("Destino eliminado: {DestinationName} (ID: {DestinationId})", 
                 destination.Name, destination.ID);

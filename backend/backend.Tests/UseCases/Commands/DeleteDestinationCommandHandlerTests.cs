@@ -14,13 +14,13 @@ namespace backend.Tests.Application.Commands
     /// </summary>
     public class DeleteDestinationCommandHandlerTests
     {
-        private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+        private readonly Mock<IRepositoryManager> _mockRepositoryManager;
         private readonly DeleteDestinationCommandHandler _handler;
 
         public DeleteDestinationCommandHandlerTests()
         {
-            _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _handler = new DeleteDestinationCommandHandler(_mockUnitOfWork.Object);
+            _mockRepositoryManager = new Mock<IRepositoryManager>();
+            _handler = new DeleteDestinationCommandHandler(_mockRepositoryManager.Object);
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace backend.Tests.Application.Commands
             var command = new DeleteDestinationCommand { Id = 1 };
             var existingDestination = TestDataHelper.CreateTestDestination();
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(1))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(1))
                           .ReturnsAsync(existingDestination);
 
             // Act
@@ -38,8 +38,8 @@ namespace backend.Tests.Application.Commands
 
             // Assert
             result.Should().BeTrue();
-            _mockUnitOfWork.Verify(u => u.Destinations.Remove(existingDestination), Times.Once);
-            _mockUnitOfWork.Verify(u => u.SaveChangesAsync(), Times.Once);
+            _mockRepositoryManager.Verify(r => r.Destinations.Remove(existingDestination), Times.Once);
+            _mockRepositoryManager.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace backend.Tests.Application.Commands
             // Arrange
             var command = new DeleteDestinationCommand { Id = 999 };
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(999))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(999))
                           .ReturnsAsync((Destination?)null);
 
             // Act
@@ -56,8 +56,8 @@ namespace backend.Tests.Application.Commands
 
             // Assert
             result.Should().BeFalse();
-            _mockUnitOfWork.Verify(u => u.Destinations.Remove(It.IsAny<Destination>()), Times.Never);
-            _mockUnitOfWork.Verify(u => u.SaveChangesAsync(), Times.Never);
+            _mockRepositoryManager.Verify(r => r.Destinations.Remove(It.IsAny<Destination>()), Times.Never);
+            _mockRepositoryManager.Verify(r => r.SaveChangesAsync(), Times.Never);
         }
 
         [Fact]
@@ -67,16 +67,16 @@ namespace backend.Tests.Application.Commands
             var command = new DeleteDestinationCommand { Id = 1 };
             var existingDestination = TestDataHelper.CreateTestDestination();
 
-            _mockUnitOfWork.Setup(u => u.Destinations.GetByIdAsync(1))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(1))
                           .ReturnsAsync(existingDestination);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockUnitOfWork.Verify(u => u.Destinations.GetByIdAsync(1), Times.Once);
-            _mockUnitOfWork.Verify(u => u.Destinations.Remove(existingDestination), Times.Once);
-            _mockUnitOfWork.Verify(u => u.SaveChangesAsync(), Times.Once);
+            _mockRepositoryManager.Verify(r => r.Destinations.GetByIdAsync(1), Times.Once);
+            _mockRepositoryManager.Verify(r => r.Destinations.Remove(existingDestination), Times.Once);
+            _mockRepositoryManager.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
     }
 }

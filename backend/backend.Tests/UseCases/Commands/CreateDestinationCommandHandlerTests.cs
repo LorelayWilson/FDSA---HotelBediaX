@@ -15,13 +15,13 @@ namespace backend.Tests.Application.Commands
     /// </summary>
     public class CreateDestinationCommandHandlerTests
     {
-        private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+        private readonly Mock<IRepositoryManager> _mockRepositoryManager;
         private readonly CreateDestinationCommandHandler _handler;
 
         public CreateDestinationCommandHandlerTests()
         {
-            _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _handler = new CreateDestinationCommandHandler(_mockUnitOfWork.Object);
+            _mockRepositoryManager = new Mock<IRepositoryManager>();
+            _handler = new CreateDestinationCommandHandler(_mockRepositoryManager.Object);
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace backend.Tests.Application.Commands
             
             // Setup mock para el repositorio
             var mockRepository = new Mock<backend.Domain.Interfaces.IDestinationRepository>();
-            _mockUnitOfWork.Setup(u => u.Destinations).Returns(mockRepository.Object);
+            _mockRepositoryManager.Setup(r => r.Destinations).Returns(mockRepository.Object);
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
@@ -45,7 +45,7 @@ namespace backend.Tests.Application.Commands
             result.CountryCode.Should().Be(createDto.CountryCode);
             result.Type.Should().Be(createDto.Type);
             mockRepository.Verify(r => r.Add(It.IsAny<Destination>()), Times.Once);
-            _mockUnitOfWork.Verify(u => u.SaveChangesAsync(), Times.Once);
+            _mockRepositoryManager.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace backend.Tests.Application.Commands
             
             // Setup mock para el repositorio
             var mockRepository = new Mock<backend.Domain.Interfaces.IDestinationRepository>();
-            _mockUnitOfWork.Setup(u => u.Destinations).Returns(mockRepository.Object);
+            _mockRepositoryManager.Setup(r => r.Destinations).Returns(mockRepository.Object);
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
