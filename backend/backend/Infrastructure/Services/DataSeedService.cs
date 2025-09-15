@@ -12,17 +12,14 @@ namespace backend.Infrastructure.Services
     public class DataSeedService
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<DataSeedService> _logger;
 
         /// <summary>
         /// Constructor que recibe el contexto de base de datos
         /// </summary>
         /// <param name="context">Contexto de Entity Framework para insertar datos</param>
-        /// <param name="logger">Logger para registro de eventos</param>
-        public DataSeedService(ApplicationDbContext context, ILogger<DataSeedService> logger)
+        public DataSeedService(ApplicationDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         /// <summary>

@@ -28,7 +28,7 @@ namespace backend.Tests.Controllers
         {
             _mockMediator = new Mock<IMediator>();
             _mockLogger = new Mock<ILogger<DestinationsController>>();
-            _controller = new DestinationsController(_mockMediator.Object, _mockLogger.Object);
+            _controller = new DestinationsController(_mockMediator.Object);
         }
 
         [Fact]

@@ -13,12 +13,10 @@ namespace backend.Presentation.Controllers
     public class DestinationsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<DestinationsController> _logger;
 
-        public DestinationsController(IMediator mediator, ILogger<DestinationsController> logger)
+        public DestinationsController(IMediator mediator)
         {
             _mediator = mediator;
-            _logger = logger;
         }
 
         /// <summary>

@@ -22,7 +22,7 @@ namespace backend.Tests.Presentation.Middleware
         {
             _mockLogger = new Mock<ILogger<GlobalExceptionMiddleware>>();
             RequestDelegate next = (ctx) => Task.CompletedTask;
-            _middleware = new GlobalExceptionMiddleware(next, _mockLogger.Object);
+            _middleware = new GlobalExceptionMiddleware(next);
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace backend.Tests.Presentation.Middleware
                 nextCalled = true;
                 return Task.CompletedTask;
             };
-            var middleware = new GlobalExceptionMiddleware(next, _mockLogger.Object);
+            var middleware = new GlobalExceptionMiddleware(next);
 
             // Act
             await middleware.InvokeAsync(context);
@@ -56,7 +56,7 @@ namespace backend.Tests.Presentation.Middleware
             {
                 throw new Exception("Test exception");
             };
-            var middleware = new GlobalExceptionMiddleware(next, _mockLogger.Object);
+            var middleware = new GlobalExceptionMiddleware(next);
 
             // Act
             await middleware.InvokeAsync(context);
@@ -77,7 +77,7 @@ namespace backend.Tests.Presentation.Middleware
             {
                 throw new Exception("Test exception");
             };
-            var middleware = new GlobalExceptionMiddleware(next, _mockLogger.Object);
+            var middleware = new GlobalExceptionMiddleware(next);
 
             // Act
             await middleware.InvokeAsync(context);
@@ -100,7 +100,7 @@ namespace backend.Tests.Presentation.Middleware
             {
                 throw new Exception("Test exception");
             };
-            var middleware = new GlobalExceptionMiddleware(next, _mockLogger.Object);
+            var middleware = new GlobalExceptionMiddleware(next);
 
             // Act
             await middleware.InvokeAsync(context);

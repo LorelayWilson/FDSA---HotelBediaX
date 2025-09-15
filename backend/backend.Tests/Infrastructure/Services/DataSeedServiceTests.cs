@@ -27,7 +27,7 @@ namespace backend.Tests.Infrastructure.Services
 
             _context = new ApplicationDbContext(options);
             _mockLogger = new Mock<ILogger<DataSeedService>>();
-            _service = new DataSeedService(_context, _mockLogger.Object);
+            _service = new DataSeedService(_context);
         }
 
         [Fact]

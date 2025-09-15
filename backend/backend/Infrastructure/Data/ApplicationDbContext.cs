@@ -26,20 +26,15 @@ namespace backend.Infrastructure.Data
 
         /// <summary>
         /// Método llamado durante la creación del modelo para configurar entidades
-        /// Define índices para optimizar consultas de filtrado
+        /// Nota: Los índices no son necesarios para InMemoryDatabase
         /// </summary>
         /// <param name="modelBuilder">Constructor del modelo de Entity Framework</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            // Configuración de índices para mejorar el rendimiento en consultas de filtrado
-            modelBuilder.Entity<Destination>(entity =>
-            {
-                entity.HasIndex(e => e.CountryCode);
-                entity.HasIndex(e => e.Type);
-                entity.HasIndex(e => e.LastModif);
-            });
+            
+            // No se configuran índices ya que se usa InMemoryDatabase
+            // Los índices no tienen efecto en bases de datos en memoria
         }
     }
 }
