@@ -63,7 +63,7 @@ namespace backend.Tests.Application.Commands
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            result.LastModif.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+            result.LastModif.Should().BeCloseTo(DateTime.UtcNow, TestConstants.DateTimeTolerance);
         }
     }
 }

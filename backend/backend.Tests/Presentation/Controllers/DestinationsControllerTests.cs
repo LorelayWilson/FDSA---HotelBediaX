@@ -108,7 +108,7 @@ namespace backend.Tests.Controllers
         public async Task GetDestination_WithInvalidId_ReturnsNotFound()
         {
             // Arrange
-            var destinationId = 999;
+            var destinationId = TestConstants.NonExistentDestinationId;
             _mockMediator.Setup(m => m.Send(It.IsAny<GetDestinationByIdQuery>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync((DestinationDto?)null);
 
@@ -199,7 +199,7 @@ namespace backend.Tests.Controllers
         public async Task UpdateDestination_WithInvalidId_ReturnsNotFound()
         {
             // Arrange
-            var destinationId = 999;
+            var destinationId = TestConstants.NonExistentDestinationId;
             var updateDto = TestDataHelper.CreateTestUpdateDestinationDto();
             _mockMediator.Setup(m => m.Send(It.IsAny<UpdateDestinationCommand>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync((DestinationDto?)null);
@@ -247,7 +247,7 @@ namespace backend.Tests.Controllers
         public async Task DeleteDestination_WithInvalidId_ReturnsNotFound()
         {
             // Arrange
-            var destinationId = 999;
+            var destinationId = TestConstants.NonExistentDestinationId;
             _mockMediator.Setup(m => m.Send(It.IsAny<DeleteDestinationCommand>(), It.IsAny<CancellationToken>()))
                        .ReturnsAsync(false);
 

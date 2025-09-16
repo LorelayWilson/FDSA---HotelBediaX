@@ -30,7 +30,7 @@ namespace backend.Tests.Integration
                     // Reemplazar la base de datos con una en memoria para tests
                     var descriptor = services.SingleOrDefault(
                         d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
-                    if (descriptor != null)
+                    if (descriptor is not null)
                         services.Remove(descriptor);
 
                     services.AddDbContext<ApplicationDbContext>(options =>

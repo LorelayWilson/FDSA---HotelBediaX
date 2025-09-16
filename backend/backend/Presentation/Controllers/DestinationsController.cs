@@ -54,7 +54,7 @@ namespace backend.Presentation.Controllers
             var query = new GetDestinationByIdQuery { Id = id };
             var destination = await _mediator.Send(query);
             
-            if (destination == null)
+            if (destination is null)
             {
                 Log.Warning("Destino no encontrado con ID: {DestinationId}", id);
                 return NotFound(new { message = "Destino no encontrado" });
@@ -114,7 +114,7 @@ namespace backend.Presentation.Controllers
             var command = new UpdateDestinationCommand { Id = id, UpdateDestinationDto = updateDto };
             var destination = await _mediator.Send(command);
             
-            if (destination == null)
+            if (destination is null)
             {
                 Log.Warning("Destino no encontrado para actualizar con ID: {DestinationId}", id);
                 return NotFound(new { message = "Destino no encontrado" });

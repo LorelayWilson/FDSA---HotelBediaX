@@ -21,7 +21,7 @@ namespace backend.Application.Commands
             // Buscar el destino a eliminar
             var destination = await _repositoryManager.Destinations.GetByIdAsync(request.Id);
 
-            if (destination == null)
+            if (destination is null)
             {
                 Log.Warning("Destino no encontrado para eliminar con ID: {DestinationId}", request.Id);
                 return false;

@@ -47,9 +47,9 @@ namespace backend.Tests.Application.Queries
         public async Task Handle_WithNonExistentId_ShouldReturnNull()
         {
             // Arrange
-            var query = new GetDestinationByIdQuery { Id = 999 };
+            var query = new GetDestinationByIdQuery { Id = TestConstants.NonExistentDestinationId };
 
-            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(999))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(TestConstants.NonExistentDestinationId))
                           .ReturnsAsync((Destination?)null);
 
             // Act

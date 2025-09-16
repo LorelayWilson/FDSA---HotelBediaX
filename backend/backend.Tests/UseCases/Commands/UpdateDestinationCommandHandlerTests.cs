@@ -41,7 +41,7 @@ namespace backend.Tests.Application.Commands
 
             // Assert
             result.Should().NotBeNull();
-            result.Name.Should().Be(updateDto.Name);
+            result!.Name.Should().Be(updateDto.Name);
             result.Description.Should().Be(updateDto.Description);
             result.CountryCode.Should().Be(updateDto.CountryCode);
             result.Type.Should().Be(updateDto.Type);
@@ -54,9 +54,9 @@ namespace backend.Tests.Application.Commands
         {
             // Arrange
             var updateDto = TestDataHelper.CreateTestUpdateDestinationDto();
-            var command = new UpdateDestinationCommand { Id = 999, UpdateDestinationDto = updateDto };
+            var command = new UpdateDestinationCommand { Id = TestConstants.NonExistentDestinationId, UpdateDestinationDto = updateDto };
 
-            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(999))
+            _mockRepositoryManager.Setup(r => r.Destinations.GetByIdAsync(TestConstants.NonExistentDestinationId))
                           .ReturnsAsync((Destination?)null);
 
             // Act
@@ -84,7 +84,7 @@ namespace backend.Tests.Application.Commands
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            existingDestination.LastModif.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+            existingDestination.LastModif.Should().BeCloseTo(DateTime.UtcNow, TestConstants.DateTimeTolerance);
         }
     }
 }

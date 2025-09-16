@@ -55,7 +55,7 @@ namespace backend.Tests.Ports.Adapters
             result.Description.Should().Be(createDto.Description);
             result.CountryCode.Should().Be(createDto.CountryCode);
             result.Type.Should().Be(createDto.Type);
-            result.LastModif.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+            result.LastModif.Should().BeCloseTo(DateTime.UtcNow, TestConstants.DateTimeTolerance);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace backend.Tests.Ports.Adapters
             result.Description.Should().Be(updateDto.Description);
             result.CountryCode.Should().Be(updateDto.CountryCode);
             result.Type.Should().Be(updateDto.Type);
-            result.LastModif.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+            result.LastModif.Should().BeCloseTo(DateTime.UtcNow, TestConstants.DateTimeTolerance);
         }
 
         [Fact]

@@ -2,7 +2,6 @@ using backend.Infrastructure.Data;
 using backend.Infrastructure.Services;
 using backend.Presentation.Middleware;
 using backend.Domain.Interfaces;
-using backend.Infrastructure.UnitOfWork;
 using backend.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
