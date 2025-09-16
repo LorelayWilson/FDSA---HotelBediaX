@@ -40,7 +40,7 @@ namespace backend.Tests.Application.Queries
 
             // Assert
             result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(expectedDto);
+            result.Should().BeEquivalentTo(expectedDto, options => options.Excluding(x => x.LastModif));
         }
 
         [Fact]

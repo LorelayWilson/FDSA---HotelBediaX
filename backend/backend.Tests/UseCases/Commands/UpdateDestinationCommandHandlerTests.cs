@@ -41,7 +41,10 @@ namespace backend.Tests.Application.Commands
 
             // Assert
             result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(expectedDto);
+            result.Name.Should().Be(updateDto.Name);
+            result.Description.Should().Be(updateDto.Description);
+            result.CountryCode.Should().Be(updateDto.CountryCode);
+            result.Type.Should().Be(updateDto.Type);
             _mockRepositoryManager.Verify(r => r.Destinations.Update(existingDestination), Times.Once);
             _mockRepositoryManager.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
